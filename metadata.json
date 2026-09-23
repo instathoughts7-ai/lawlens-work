@@ -1,0 +1,6 @@
+{
+  "name": "LawLens Work",
+  "description": "Helps people in India read their own legal documents with privacy-first document analysis for employment agreements.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

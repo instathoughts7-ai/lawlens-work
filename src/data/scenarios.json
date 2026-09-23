@@ -1,0 +1,801 @@
+{
+  "domains": [
+    {
+      "id": "employee",
+      "label": "Employee",
+      "sections": [
+        {
+          "id": "leaving",
+          "label": "Leaving your job",
+          "topics": [
+            {
+              "id": "notice_length",
+              "label": "Notice period",
+              "checks": ["NP1"]
+            },
+            {
+              "id": "early_release",
+              "label": "Early release and buyout",
+              "checks": ["ER1", "ER3", "ER4", "NP2"]
+            },
+            {
+              "id": "non_compete",
+              "label": "Non-compete clause",
+              "checks": ["NC1"]
+            },
+            {
+              "id": "resignation_acceptance",
+              "label": "Resignation & relieving letter terms",
+              "checks": ["RL1"]
+            }
+          ]
+        },
+        {
+          "id": "rto",
+          "label": "Return to office",
+          "topics": [
+            {
+              "id": "rto_location",
+              "label": "Work location in your letter",
+              "checks": ["RTO1"]
+            },
+            {
+              "id": "rto_schedule",
+              "label": "Return-to-office schedule",
+              "checks": ["RTO2"]
+            }
+          ]
+        },
+        {
+          "id": "joining",
+          "label": "Joining a new company",
+          "topics": [
+            {
+              "id": "standard_clauses",
+              "label": "Standard clause checklist",
+              "checks": ["BR1", "BR2", "BR3", "BR4", "BR5", "BR6", "BR7"]
+            },
+            {
+              "id": "probation",
+              "label": "Probation period and confirmation",
+              "checks": ["PB1"]
+            },
+            {
+              "id": "ip_assignment",
+              "label": "Intellectual property assignment",
+              "checks": ["IP1"]
+            }
+          ]
+        },
+        {
+          "id": "compensation",
+          "label": "Compensation & deductions",
+          "topics": [
+            {
+              "id": "bonus_clawback",
+              "label": "Joining bonus & training cost recovery",
+              "checks": ["CB1"]
+            },
+            {
+              "id": "deductions",
+              "label": "Salary deductions & recoveries",
+              "checks": ["DED2", "DED3", "DED4", "DED6"]
+            },
+            {
+              "id": "payslip_check",
+              "label": "Payslip & salary breakdown",
+              "checks": ["PS1"]
+            },
+            {
+              "id": "leave_entitlement",
+              "label": "Leave entitlement & encashment",
+              "checks": ["LV1"]
+            }
+          ]
+        }
+      ],
+      "verify_pointers": [
+        "Check if the document is signed on official company letterhead by an authorized signatory (HR Manager or Director).",
+        "Verify that joining dates, compensation figures, and designation match what was communicated in your official email offer.",
+        "Ensure all annexed annexures, schedules, and referenced company policy handbooks were provided to you in writing.",
+        "Confirm whether verbal assurances regarding flexible working hours or notice buy-out waivers are documented in writing."
+      ]
+    },
+    {
+      "id": "consumer",
+      "label": "Consumer",
+      "sections": [
+        {
+          "id": "consumer_purchases",
+          "label": "Online purchases & e-commerce",
+          "topics": [
+            {
+              "id": "return_refund_policy",
+              "label": "Return and refund policy",
+              "checks": ["CON1", "CON2"]
+            },
+            {
+              "id": "warranty_defect_liability",
+              "label": "Warranty and defect liability",
+              "checks": ["CON3", "CON4"]
+            }
+          ]
+        },
+        {
+          "id": "consumer_services",
+          "label": "Service agreements & subscriptions",
+          "topics": [
+            {
+              "id": "subscription_cancellation",
+              "label": "Cancellation & auto-renewal",
+              "checks": ["CON5", "CON6"]
+            },
+            {
+              "id": "unfair_contract_terms",
+              "label": "Unilateral terms & dispute forum",
+              "checks": ["CON7", "CON8"]
+            }
+          ]
+        }
+      ],
+      "verify_pointers": [
+        "Verify that the seller's registered trade name, physical address, GSTIN, and tax invoice number are clearly stated.",
+        "Ensure invoice details match the specific model, serial number, and product specifications received.",
+        "Check whether the seller provides an official grievance officer email and address as required by Indian E-Commerce Rules.",
+        "Verify written warranty coverage terms, authorized service center networks, and repair turnaround commitments."
+      ]
+    },
+    {
+      "id": "family",
+      "label": "Family matters",
+      "privacy_note": "Replace names with 'Person A' and 'Person B'.",
+      "sections": [
+        {
+          "id": "family_deeds",
+          "label": "Family agreements and deeds",
+          "topics": [
+            {
+              "id": "family_settlement_deed",
+              "label": "Family settlement deed",
+              "privacy_note": "Replace names with 'Person A' and 'Person B'.",
+              "checks": ["FAM1", "FAM2", "FAM3"]
+            },
+            {
+              "id": "partition_deed",
+              "label": "Partition deed terms",
+              "privacy_note": "Replace names with 'Person A' and 'Person B'.",
+              "checks": ["FAM4", "FAM5"]
+            }
+          ]
+        },
+        {
+          "id": "maintenance_succession",
+          "label": "Maintenance & succession",
+          "topics": [
+            {
+              "id": "maintenance_agreement",
+              "label": "Maintenance and financial support",
+              "safety_note": "This review is educational and informational only. If you or someone you know is facing domestic distress, please contact the National Emergency Helpline (112) or Women Helpline (181).",
+              "checks": ["FAM6", "FAM7"]
+            },
+            {
+              "id": "gift_deed_terms",
+              "label": "Gift deed covenants",
+              "privacy_note": "Replace names with 'Person A' and 'Person B'.",
+              "checks": ["FAM8"]
+            }
+          ]
+        }
+      ],
+      "verify_pointers": [
+        "Confirm that all legal heirs, co-owners, and interested family members are included as signatories to prevent future succession disputes.",
+        "Verify whether the deed is registered before the local Sub-Registrar of Assurances if it creates, declares, or assigns rights in immovable property.",
+        "Ensure full property schedules with municipal khata, survey numbers, boundaries, and encumbrance certificates are attached.",
+        "Check that voluntary execution without undue influence, coercion, or misrepresentation is expressly recorded."
+      ]
+    },
+    {
+      "id": "housing",
+      "label": "Housing",
+      "privacy_note": "Protect your personal data: remove exact flat numbers, Aadhaar numbers, and bank account details before pasting text.",
+      "sections": [
+        {
+          "id": "rental_agreements",
+          "label": "Rental and lease agreements",
+          "topics": [
+            {
+              "id": "security_deposit_terms",
+              "label": "Security deposit & refund clause",
+              "checks": ["HOU1", "HOU2"]
+            },
+            {
+              "id": "lockin_period_notice",
+              "label": "Lock-in period & exit notice",
+              "checks": ["HOU3", "HOU4"]
+            },
+            {
+              "id": "maintenance_utilities",
+              "label": "Repairs, maintenance & utilities",
+              "checks": ["HOU5", "HOU6"]
+            }
+          ]
+        },
+        {
+          "id": "buyer_builder_agreements",
+          "label": "Buyer-builder & sale agreements",
+          "topics": [
+            {
+              "id": "possession_delay_compensation",
+              "label": "Possession timeline & delay interest",
+              "checks": ["HOU7", "HOU8"]
+            },
+            {
+              "id": "payment_plan_forfeiture",
+              "label": "Construction-linked payments & forfeiture",
+              "checks": ["HOU9", "HOU10"]
+            }
+          ]
+        }
+      ],
+      "verify_pointers": [
+        "Verify that the agreement is executed on appropriate non-judicial stamp paper and registered per your state's Tenancy/Rent Control Act.",
+        "Confirm the exact security deposit refund timeframe (e.g., within 7 to 30 days of handover) and deduction dispute procedures.",
+        "Ensure an inventory and condition schedule of all fittings and utility meter readings is signed at the time of key handover.",
+        "Check RERA registration number and RERA carpet area specification if reviewing builder-buyer apartment agreements."
+      ]
+    }
+  ],
+  "checks": {
+    "NP1": {
+      "id": "NP1",
+      "title": "Notice Period Asymmetry",
+      "kind": "handler",
+      "type": "handler",
+      "severity": "high",
+      "whyItMatters": "In India, notice periods should ideally be reciprocal. When an employee is required to serve a long notice period (e.g., 90 days) but the employer reserves the right to terminate with substantially shorter notice (e.g., 30 days or pay in lieu), it restricts your career mobility and creates an unequal exit burden.",
+      "questionToAsk": "Can the notice period clause be amended to make the duration reciprocal for both parties (equal notice for resignation and termination)?"
+    },
+    "RTO1": {
+      "id": "RTO1",
+      "title": "Workplace Location Conflict",
+      "kind": "handler",
+      "type": "handler",
+      "severity": "high",
+      "whyItMatters": "If your new letter or return-to-office directive specifies a base location different from your original employment agreement, you may be compelled to relocate at your own expense or face termination without standard relocation support.",
+      "questionToAsk": "Does the base office location in this directive match the principal place of employment defined in my original appointment letter?"
+    },
+    "RTO2": {
+      "id": "RTO2",
+      "title": "Hybrid Schedule & Mandatory Office Days",
+      "kind": "handler",
+      "type": "handler",
+      "severity": "medium",
+      "whyItMatters": "Unilateral alterations to working days per week or in-office quotas can disrupt commuting, family arrangements, and work-life balance.",
+      "questionToAsk": "What is the official policy and transition period for hybrid work schedule modifications?"
+    },
+    "PS1": {
+      "id": "PS1",
+      "title": "Payslip Component Breakdown & Tax Deductions",
+      "kind": "handler",
+      "type": "handler",
+      "severity": "medium",
+      "whyItMatters": "Indian tax laws and PF regulations mandate accurate statutory allocations between Basic Pay, HRA, and allowances.",
+      "questionToAsk": "Can the company provide a detailed component breakdown showing Basic, HRA, PF contributions, and Professional Tax?"
+    },
+    "LV1": {
+      "id": "LV1",
+      "title": "Leave Entitlement & Encashment",
+      "kind": "handler",
+      "type": "handler",
+      "severity": "medium",
+      "whyItMatters": "Shops and Establishments Acts across Indian states mandate minimum earned/privilege leave and clear encashment rules upon separation.",
+      "questionToAsk": "What is the annual earned leave allocation and what are the encashment terms upon resignation?"
+    },
+    "ER1": {
+      "id": "ER1",
+      "title": "Early Release at Employer Discretion",
+      "kind": "pattern",
+      "type": "pattern",
+      "severity": "medium",
+      "pattern": "(?:sole(?: and absolute)? discretion|sole option|discretion of the (?:company|management)|cannot be claimed as a matter of right)",
+      "plainSummary": "Early release or notice buyout is framed as subject to the company's sole discretion rather than an employee option.",
+      "whyItMatters": "When notice buyout is entirely at employer discretion, you cannot unilaterally buy out your notice period if you receive an immediate start date from another employer.",
+      "questionToAsk": "Can the clause be revised to specify mutually agreed buyout conditions or reasonable criteria for early exit approval?"
+    },
+    "ER3": {
+      "id": "ER3",
+      "title": "Notice Buyout Salary Recovery / Costs",
+      "kind": "pattern",
+      "type": "pattern",
+      "severity": "medium",
+      "pattern": "(?:recover(?:y of)? gross salary|gross salary for the unserved|replacement recruitment expenses|liquidated damages for early (?:release|exit))",
+      "plainSummary": "Buyout recovery is calculated on gross salary or includes additional penalties rather than basic salary.",
+      "whyItMatters": "Notice period buyout should ideally be computed on basic salary or net compensation rather than total gross cost-to-company or arbitrary recruitment damages.",
+      "questionToAsk": "Is buyout calculated strictly on basic salary, and can liquidated damage / replacement expense provisions be removed?"
+    },
+    "ER4": {
+      "id": "ER4",
+      "title": "Withholding of Relieving Documentation",
+      "kind": "pattern",
+      "type": "pattern",
+      "severity": "medium",
+      "pattern": "(?:withhold(?:ing)? (?:the )?(?:relieving letter|experience certificate)|(?:relieving letter|experience certificate).*?withheld)",
+      "plainSummary": "The employer explicitly reserves the right to withhold your relieving letter and experience certificate.",
+      "whyItMatters": "Under Indian employment standards, employers should issue relieving and experience certificates upon completion of handover and clear exit settlement without coercive retention.",
+      "questionToAsk": "Can the timeline for issuing the final relieving letter and experience certificate be explicitly stated (e.g., within 30 days of last working day)?"
+    },
+    "NP2": {
+      "id": "NP2",
+      "title": "Unilateral Notice Waiver Without Pay",
+      "kind": "pattern",
+      "type": "pattern",
+      "severity": "medium",
+      "pattern": "(?:waive (?:the )?notice period without (?:any )?(?:pay|compensation)|waive(?:r)? of notice without pay|company may waive the notice period and terminate immediately without pay)",
+      "plainSummary": "The employer claims the unilateral right to waive your notice period without paying salary in lieu.",
+      "whyItMatters": "If an employer waives an employee's notice period upon resignation, they should compensate the employee for the unserved period if the early exit is enforced by the company.",
+      "questionToAsk": "If the company opts to waive the notice period upon my resignation, will I be paid salary in lieu of that period?"
+    },
+    "NC1": {
+      "id": "NC1",
+      "title": "Post-Employment Non-Compete Restriction",
+      "kind": "pattern",
+      "type": "pattern",
+      "severity": "medium",
+      "pattern": "(?:during your employment.*?and for a (?:duration|period) of|following termination.*?not engage in.*?competing|non[- ]compete.*?following termination|duration of \\d+ months following)",
+      "plainSummary": "Post-employment non-compete covenants restrict your ability to work for competitors after leaving.",
+      "whyItMatters": "Under Section 27 of the Indian Contract Act, post-employment restrictive covenants restraining lawful profession, trade, or business are generally void and unenforceable.",
+      "questionToAsk": "Does this non-compete restriction apply strictly during active employment, or does it attempt to restrict post-employment mobility?"
+    },
+    "RL1": {
+      "id": "RL1",
+      "title": "Company Discretion to Accept Resignation",
+      "kind": "pattern",
+      "type": "pattern",
+      "severity": "medium",
+      "pattern": "(?:subject to acceptance by the company|resignation.*?subject to approval|company reserves the right to reject.*?resignation)",
+      "plainSummary": "The contract conditions your resignation on discretionary company approval or acceptance.",
+      "whyItMatters": "Employment is a consensual contract. In India, an employee's resignation is an exercise of their contractual right upon serving notice or paying salary in lieu, not a privilege requiring subjective approval.",
+      "questionToAsk": "Does resignation take effect automatically upon completion of the contractual notice period?"
+    },
+    "PB1": {
+      "id": "PB1",
+      "title": "Indefinite Probation Extension",
+      "kind": "pattern",
+      "type": "pattern",
+      "severity": "low",
+      "pattern": "(?:probation.*?extended from time to time|remain on probation until confirmed in writing|probation may be extended indefinitely)",
+      "plainSummary": "Probation may be extended repeatedly without an outer cap or requires explicit confirmation to end.",
+      "whyItMatters": "Indefinite probation status can leave your job security vulnerable to prolonged short-notice termination.",
+      "questionToAsk": "What is the maximum cumulative period for probation, and is there deemed confirmation after the initial probation period?"
+    },
+    "IP1": {
+      "id": "IP1",
+      "title": "Broad Prior IP & Personal Inventions Assignment",
+      "kind": "pattern",
+      "type": "pattern",
+      "severity": "medium",
+      "pattern": "(?:assigns? all prior inventions|all inventions.*?whether or not during working hours|regardless of whether conceived during)",
+      "plainSummary": "Intellectual property assignment encompasses personal projects or pre-existing inventions created outside work.",
+      "whyItMatters": "IP assignments should be limited to works created during employment hours using company resources and relevant to company business.",
+      "questionToAsk": "Can pre-existing personal inventions and work created outside business hours be explicitly carved out?"
+    },
+    "CB1": {
+      "id": "CB1",
+      "title": "Extended Bonus Clawback Duration",
+      "kind": "pattern",
+      "type": "pattern",
+      "severity": "medium",
+      "pattern": "(?:clawback|repay(?:ment)? of (?:joining|sign-on) bonus|recover.*?training costs?.*?within (?:24|36) months)",
+      "plainSummary": "Joining bonus or training expense clawback applies over an extended period (24 to 36 months).",
+      "whyItMatters": "Extended retention clawbacks (beyond 12 months) can act as financial golden handcuffs, significantly increasing the cost of switching jobs.",
+      "questionToAsk": "Can the clawback period be prorated on a monthly basis rather than an all-or-nothing repayment across multiple years?"
+    },
+    "DED2": {
+      "id": "DED2",
+      "title": "Unilateral Deductions for Equipment or Loss",
+      "kind": "pattern",
+      "type": "pattern",
+      "severity": "medium",
+      "pattern": "(?:unilaterally deduct|deduct from salary.*?(?:damage|loss|shortfall)|deductions? at its sole discretion)",
+      "plainSummary": "The employer reserves the right to make discretionary salary deductions for unspecified losses or damages.",
+      "whyItMatters": "Under the Payment of Wages Act, deductions for damages must follow due process and opportunity for explanation, not arbitrary unilateral deductions.",
+      "questionToAsk": "What is the dispute mechanism and maximum cap before any damage-related deduction is made from salary?"
+    },
+    "DED3": {
+      "id": "DED3",
+      "title": "Training Bond & Cost Recovery Deductions",
+      "kind": "pattern",
+      "type": "pattern",
+      "severity": "medium",
+      "pattern": "(?:training (?:cost|expense|bond).*?deduct|deduct.*?training (?:cost|bond)|liquidated damages for training)",
+      "plainSummary": "Deductions for training costs or training bond penalties are specified.",
+      "whyItMatters": "Under Indian law, employers can only recover actual, verifiable expenses incurred for specialized training, not punitive penalty sums.",
+      "questionToAsk": "Will the company provide itemized bills of actual training expenses incurred if recovery is sought?"
+    },
+    "DED4": {
+      "id": "DED4",
+      "title": "Notice Shortfall Deduction at Gross Rate",
+      "kind": "pattern",
+      "type": "pattern",
+      "severity": "medium",
+      "pattern": "(?:shortfall in notice.*?deducted from.*?gross salary|deduct.*?gross salary for.*?shortfall in notice)",
+      "plainSummary": "Notice shortfall deduction is calculated against total gross cost-to-company rather than basic salary.",
+      "whyItMatters": "Shortfall recovery at gross CTC rather than basic pay disproportionately penalizes departing employees.",
+      "questionToAsk": "Is notice shortfall deduction based on basic salary rather than gross monthly CTC?"
+    },
+    "DED6": {
+      "id": "DED6",
+      "title": "Mandatory Security Deposit / Salary Retention",
+      "kind": "pattern",
+      "type": "pattern",
+      "severity": "high",
+      "pattern": "(?:security deposit.*?retained|salary.*?retained as security|withhold.*?portion of salary as security)",
+      "plainSummary": "The company withholds a portion of regular monthly salary as a security deposit.",
+      "whyItMatters": "Retaining portions of an employee's earned salary as security is unlawful under Indian wage regulations and restricts employee freedom.",
+      "questionToAsk": "Can this salary retention or security deposit requirement be removed?"
+    },
+    "BR1": {
+      "id": "BR1",
+      "title": "Job Scope & Responsibilities Clause",
+      "kind": "missing",
+      "type": "missing",
+      "severity": "medium",
+      "pattern": "(?:job description|scope of work|roles? and responsibilities|duties and responsibilities|responsibilities include)",
+      "plainSummary": "The document lacks a clear definition of job duties and scope of work.",
+      "whyItMatters": "Without defined job responsibilities, you may be assigned disparate responsibilities without mutual agreement.",
+      "questionToAsk": "Can an annexure detailing core job duties, reporting structure, and key performance expectations be attached?"
+    },
+    "BR2": {
+      "id": "BR2",
+      "title": "Working Hours & Work Week Clause",
+      "kind": "missing",
+      "type": "missing",
+      "severity": "medium",
+      "pattern": "(?:working hours|hours of work|business hours|standard work week|weekly hours|working days|working hours per week)",
+      "plainSummary": "The document does not state standard working hours, work week duration, or overtime policy.",
+      "whyItMatters": "Specifying working hours is essential under Indian Shops & Establishments legislation to protect against uncompensated overtime.",
+      "questionToAsk": "What are the standard daily working hours and weekly working days for this position?"
+    },
+    "BR3": {
+      "id": "BR3",
+      "title": "Variable Pay & Incentive Terms Clause",
+      "kind": "missing",
+      "type": "missing",
+      "severity": "medium",
+      "pattern": "(?:variable pay|performance bonus|performance-linked|incentive scheme|annual bonus)",
+      "plainSummary": "The document is missing explicit terms regarding variable pay, bonus criteria, and payment timelines.",
+      "whyItMatters": "Unclear variable pay clauses allow companies to withhold bonuses without clear objective performance evaluation.",
+      "questionToAsk": "What specific performance metrics and payment cycles govern the variable pay / bonus component?"
+    },
+    "BR4": {
+      "id": "BR4",
+      "title": "Non-Compete & Restrictive Covenants Disclosure",
+      "kind": "missing",
+      "type": "missing",
+      "severity": "medium",
+      "pattern": "(?:non-compete|non compete|competing business|restrictive covenant)",
+      "plainSummary": "The document does not disclose restrictive covenants or non-compete terms in the main appointment letter.",
+      "whyItMatters": "Discovering restrictive covenants later in an undisclosed employee handbook can compromise your post-exit mobility.",
+      "questionToAsk": "Are there any post-employment restrictive covenants or non-compete clauses governing this position?"
+    },
+    "BR5": {
+      "id": "BR5",
+      "title": "Confidentiality & Intellectual Property Clause",
+      "kind": "missing",
+      "type": "missing",
+      "severity": "low",
+      "pattern": "(?:confidential(?:ity)?|proprietary information|intellectual property|inventions)",
+      "plainSummary": "The document lacks a clear confidentiality and intellectual property clause.",
+      "whyItMatters": "A clear IP clause protects both employee pre-existing works and defines company proprietary boundary limits.",
+      "questionToAsk": "Is there a separate NDA or invention assignment agreement that defines proprietary boundaries?"
+    },
+    "BR6": {
+      "id": "BR6",
+      "title": "Termination & Notice Period Clause",
+      "kind": "missing",
+      "type": "missing",
+      "severity": "high",
+      "pattern": "(?:termination|notice period|written notice|days'? notice)",
+      "plainSummary": "The document is missing explicit termination conditions and notice period requirements.",
+      "whyItMatters": "Without specified termination terms, the employment relationship lacks clarity on exit rights and severance notice.",
+      "questionToAsk": "What is the stipulated notice period required for termination by either party?"
+    },
+    "BR7": {
+      "id": "BR7",
+      "title": "Dispute Resolution & Governing Law Clause",
+      "kind": "missing",
+      "type": "missing",
+      "severity": "low",
+      "pattern": "(?:governing law|jurisdiction|arbitration|dispute resolution|courts of|laws of india)",
+      "plainSummary": "The document does not specify governing law, dispute resolution mechanisms, or court jurisdiction.",
+      "whyItMatters": "Governing law and jurisdiction clauses establish where legal disputes must be resolved.",
+      "questionToAsk": "Which state laws and judicial jurisdiction govern this employment agreement?"
+    },
+    "CON1": {
+      "id": "CON1",
+      "title": "Absolute No-Refund / Final Sale Clause",
+      "kind": "pattern",
+      "type": "pattern",
+      "severity": "high",
+      "pattern": "(?:no refunds?(?: under any circumstances)?|all sales are final|strictly non-refundable|fees once paid are not refundable)",
+      "plainSummary": "The contract contains an absolute no-refund or final sale clause.",
+      "whyItMatters": "Under Section 2(47) of the Consumer Protection Act 2019, denying refunds for deficient services, defective goods, or cancelled deliveries can constitute an unfair contract term.",
+      "questionToAsk": "Does this refund restriction provide statutory exceptions for defective goods, non-delivery, or deficient services?"
+    },
+    "CON2": {
+      "id": "CON2",
+      "title": "Short Return / Grievance Notice Window",
+      "kind": "pattern",
+      "type": "pattern",
+      "severity": "medium",
+      "pattern": "(?:report (?:defects?|issues?|damages?) within (?:24|48) hours|claims? must be made within (?:24|48) hours|no claims accepted after (?:24|48) hours)",
+      "plainSummary": "The agreement imposes an unrealistically short 24–48 hour window to report defects or request a return.",
+      "whyItMatters": "Latent defects or delivery discrepancies often cannot be reasonably uncovered within 24 to 48 hours. Courts and consumer fora view excessively tight notice windows skeptically.",
+      "questionToAsk": "Can the return/defect reporting window be extended to standard consumer norms (e.g. 7 to 15 days)?"
+    },
+    "CON3": {
+      "id": "CON3",
+      "title": "Total Exclusion of Consequential Liability",
+      "kind": "pattern",
+      "type": "pattern",
+      "severity": "medium",
+      "pattern": "(?:no liability for any consequential|disclaims? all warranties, express or implied|as is without warranty of any kind|seller shall not be liable for any damages)",
+      "plainSummary": "The seller or platform disclaims all statutory warranties and limits all liability.",
+      "whyItMatters": "Section 84 of the Consumer Protection Act establishes product liability claims against manufacturers and sellers for harm caused by defective products, which contractual disclaimers cannot override.",
+      "questionToAsk": "Are standard consumer product warranties and statutory product liability protections preserved?"
+    },
+    "CON4": {
+      "id": "CON4",
+      "title": "Grievance Redressal Mechanism Clause",
+      "kind": "missing",
+      "type": "missing",
+      "severity": "medium",
+      "pattern": "(?:grievance officer|nodal officer|consumer grievance|customer care|grievance redressal)",
+      "plainSummary": "The document does not identify a designated Grievance Officer or nodal escalation path.",
+      "whyItMatters": "The Consumer Protection (E-Commerce) Rules 2020 mandate that digital commerce entities designate a Grievance Officer with an escalation mechanism.",
+      "questionToAsk": "Can the name, contact email, and ticket acknowledgement SLA of the designated Grievance Officer be stated?"
+    },
+    "CON5": {
+      "id": "CON5",
+      "title": "Automatic Subscription Renewal Without Prior Notice",
+      "kind": "pattern",
+      "type": "pattern",
+      "severity": "medium",
+      "pattern": "(?:automatically renew(?:s)? without notice|renew(?:ed)? automatically unless cancelled|recurring billing without additional notice)",
+      "plainSummary": "Subscriptions renew automatically without mandatory advance reminder notifications.",
+      "whyItMatters": "RBI e-mandate guidelines require pre-debit notifications at least 24 hours prior to recurring transactions, with an easy opt-out mechanism.",
+      "questionToAsk": "Will advance pre-debit notifications be sent before each recurring charge, with a single-click cancellation option?"
+    },
+    "CON6": {
+      "id": "CON6",
+      "title": "Simple Cancellation Procedure Clause",
+      "kind": "missing",
+      "type": "missing",
+      "severity": "medium",
+      "pattern": "(?:cancel at any time|cancellation procedure|how to cancel|opt-out instructions|terminate your subscription)",
+      "plainSummary": "The document does not describe a clear, accessible process for cancelling the service.",
+      "whyItMatters": "Dark patterns and difficult cancellation flows are prohibited under Guidelines for Prevention of Dark Patterns (2023) issued by the CCPA.",
+      "questionToAsk": "What is the exact online process to cancel recurring membership or service access without phone calls or in-person visits?"
+    },
+    "CON7": {
+      "id": "CON7",
+      "title": "Unilateral Terms Modification Right",
+      "kind": "pattern",
+      "type": "pattern",
+      "severity": "medium",
+      "pattern": "(?:modify (?:these )?terms at any time without (?:prior )?notice|reserves? the right to alter (?:these )?terms without notice|terms may change at our sole discretion)",
+      "plainSummary": "The provider claims the right to modify pricing, terms, or service features unilaterally without notice.",
+      "whyItMatters": "Unilateral modification terms allow sellers to change essential contract commitments mid-tenure, which consumer commissions routinely categorize as unfair contracts.",
+      "questionToAsk": "Will existing customers be provided at least 30 days written notice of material price or service changes, with the right to exit without penalty?"
+    },
+    "CON8": {
+      "id": "CON8",
+      "title": "Mandatory Arbitration & Consumer Forum Exclusion",
+      "kind": "pattern",
+      "type": "pattern",
+      "severity": "high",
+      "pattern": "(?:exclusive jurisdiction of arbitration|waive the right to approach consumer (?:court|forum|commission)|disputes? settled exclusively by arbitration)",
+      "plainSummary": "The clause attempts to mandate private arbitration and prevent you from filing complaints with Consumer Commissions.",
+      "whyItMatters": "The Supreme Court of India has held that consumer dispute remedies under the Consumer Protection Act are additional and cannot be ousted by private arbitration agreements.",
+      "questionToAsk": "Can consumer remedies under the Consumer Protection Act be expressly recognized alongside mutual dispute discussions?"
+    },
+    "FAM1": {
+      "id": "FAM1",
+      "title": "Unequal Relinquishment of Ancestral Claims",
+      "kind": "pattern",
+      "type": "pattern",
+      "severity": "high",
+      "pattern": "(?:relinquishes? all (?:future )?claims without (?:any )?consideration|unconditionally gives? up all rights to ancestral|waives? all inheritance rights forever)",
+      "plainSummary": "The document records an absolute relinquishment of inheritance or property rights without recorded consideration.",
+      "whyItMatters": "Relinquishment of share in immovable ancestral coparcenary property must be supported by valid consideration or voluntary family arrangement to withstand future title challenges.",
+      "questionToAsk": "Is there reciprocal consideration or alternate property allocation documented for this release of rights?"
+    },
+    "FAM2": {
+      "id": "FAM2",
+      "title": "Discretionary Alteration of Family Settlement",
+      "kind": "pattern",
+      "type": "pattern",
+      "severity": "medium",
+      "pattern": "(?:sole discretion to modify the settlement|unilaterally amend the family deed|settlement may be altered by Person A alone)",
+      "plainSummary": "One family member reserves the right to amend or revoke the settlement deed unilaterally.",
+      "whyItMatters": "A family settlement deed derives its binding legal enforceability from mutual consensus and estoppel among all participating members.",
+      "questionToAsk": "Can the deed stipulate that any future modification requires the unanimous written consent of all original parties?"
+    },
+    "FAM3": {
+      "id": "FAM3",
+      "title": "Detailed Property Schedule & Boundary Description",
+      "kind": "missing",
+      "type": "missing",
+      "severity": "high",
+      "pattern": "(?:schedule of property|property schedule|boundaries of property|survey number|khata number|measuring about)",
+      "plainSummary": "The deed does not include a clear schedule of property with survey numbers, khata details, or boundary demarcations.",
+      "whyItMatters": "Without specific survey numbers and boundary dimensions, title transfer and municipal property mutations will encounter severe administrative delays.",
+      "questionToAsk": "Can a comprehensive Schedule of Property specifying exact survey numbers, municipal khata, and boundary measurements be annexed?"
+    },
+    "FAM4": {
+      "id": "FAM4",
+      "title": "Mandatory Registration & Stamp Duty Clause",
+      "kind": "missing",
+      "type": "missing",
+      "severity": "high",
+      "pattern": "(?:registered before the sub-registrar|sub-registrar of assurances|duly stamped and registered|registration act)",
+      "plainSummary": "The document does not provide for formal registration before the Sub-Registrar of Assurances.",
+      "whyItMatters": "Under Section 17(1)(b) of the Registration Act 1908, any instrument creating, declaring, or assigning title to immovable property worth over Rs 100 must be compulsorily registered.",
+      "questionToAsk": "Will this deed be formally stamped and registered at the local Sub-Registrar's office having jurisdiction?"
+    },
+    "FAM5": {
+      "id": "FAM5",
+      "title": "Independent Witness Attestation Clause",
+      "kind": "missing",
+      "type": "missing",
+      "severity": "medium",
+      "pattern": "(?:witness 1|witness 2|in the presence of the following witnesses|attested by witnesses|witnesses:)",
+      "plainSummary": "The document is missing explicit two-party independent witness attestation blocks.",
+      "whyItMatters": "Attestation by two credible, independent witnesses is essential under Section 68 of the Indian Evidence Act to prove genuine execution.",
+      "questionToAsk": "Can signature and address blocks for two independent witnesses be included at the foot of the agreement?"
+    },
+    "FAM6": {
+      "id": "FAM6",
+      "title": "Unilateral Reduction or Cessation of Maintenance",
+      "kind": "pattern",
+      "type": "pattern",
+      "severity": "high",
+      "pattern": "(?:maintenance shall cease at the sole discretion|stop paying maintenance without court|reduce maintenance unilaterally)",
+      "plainSummary": "The payer reserves the right to reduce or stop maintenance payments unilaterally.",
+      "whyItMatters": "Statutory rights to maintenance under Section 125 CrPC / BNSS and personal laws cannot be curtailed through arbitrary unilateral cancellation clauses.",
+      "questionToAsk": "Can maintenance terms include defined escalation indices (such as inflation adjustments) and require court sanction for any downward modification?"
+    },
+    "FAM7": {
+      "id": "FAM7",
+      "title": "Default & Enforcement Mechanism for Maintenance",
+      "kind": "missing",
+      "type": "missing",
+      "severity": "medium",
+      "pattern": "(?:in the event of default in payment|default in monthly maintenance|interest on delayed maintenance|execution of maintenance)",
+      "plainSummary": "The document does not detail remedies or default penalties if monthly maintenance payments are delayed or missed.",
+      "whyItMatters": "Having a clear contractual default mechanism prevents the need for protracted enforcement applications in family courts.",
+      "questionToAsk": "What specific late interest or bank guarantee mechanism applies if monthly payments are delayed beyond the due date?"
+    },
+    "FAM8": {
+      "id": "FAM8",
+      "title": "Revocable Gift / Conditional Retention Clause",
+      "kind": "pattern",
+      "type": "pattern",
+      "severity": "medium",
+      "pattern": "(?:donor reserves the right to revoke|gift may be revoked at will|conditional gift subject to donor's discretion)",
+      "plainSummary": "A gift deed contains clauses allowing the donor to revoke the transfer arbitrarily.",
+      "whyItMatters": "Under Section 126 of the Transfer of Property Act, a gift revocable purely at the will of the donor is void. Gifts can only be revoked on grounds analogous to contract rescission.",
+      "questionToAsk": "Does this gift transfer unconditional and irrevocable ownership to the donee upon acceptance?"
+    },
+    "HOU1": {
+      "id": "HOU1",
+      "title": "Unrestricted Security Deposit Retention",
+      "kind": "pattern",
+      "type": "pattern",
+      "severity": "high",
+      "pattern": "(?:deposit will be forfeited entirely|security deposit non-refundable|entire deposit retained as penalty|landlord may forfeit deposit at discretion)",
+      "plainSummary": "The agreement grants the landlord arbitrary discretion to forfeit or retain the entire security deposit.",
+      "whyItMatters": "Under Model Tenancy Act principles, security deposits are refundable trust monies; deductions must be itemized for actual unpaid rent or verifiable physical damage beyond normal wear and tear.",
+      "questionToAsk": "Can deductions from the security deposit be restricted strictly to actual unpaid utility bills and verifiable physical damage (excluding fair wear and tear)?"
+    },
+    "HOU2": {
+      "id": "HOU2",
+      "title": "Missing Security Deposit Refund Timeline",
+      "kind": "missing",
+      "type": "missing",
+      "severity": "medium",
+      "pattern": "(?:deposit refunded within \\d+ days|refund the security deposit within|return the deposit within|days of vacating the premises)",
+      "plainSummary": "The agreement does not specify an exact number of days within which the security deposit must be refunded after move-out.",
+      "whyItMatters": "Without a fixed refund deadline (e.g., 7 or 15 days from handing over keys), tenants face indefinite repayment delays.",
+      "questionToAsk": "Can an explicit timeline (e.g., within 7 banking days of vacating and handover) be stated for the refund of the deposit?"
+    },
+    "HOU3": {
+      "id": "HOU3",
+      "title": "Asymmetric Lock-in Period Exit Penalty",
+      "kind": "pattern",
+      "type": "pattern",
+      "severity": "medium",
+      "pattern": "(?:tenant cannot vacate during lock-in|lock-in period.*?rent for the remainder|pay rent for entire unexpired lock-in)",
+      "plainSummary": "The agreement demands full rent payment for the remainder of the lock-in period even if early exit is due to emergency or job transfer.",
+      "whyItMatters": "Courts view punitive lock-in damages that exceed actual mitigation time as unenforceable penalties under Section 74 of the Indian Contract Act.",
+      "questionToAsk": "Can the lock-in clause allow early exit with 1 or 2 months notice in cases of job relocation or health emergencies?"
+    },
+    "HOU4": {
+      "id": "HOU4",
+      "title": "Written Exit Notice Period Clause",
+      "kind": "missing",
+      "type": "missing",
+      "severity": "medium",
+      "pattern": "(?:notice period of \\d+ (?:days|months)|either party may terminate by giving \\d+ (?:days|months)|written notice of termination)",
+      "plainSummary": "The lease does not specify a mutual written notice period for vacating the premises after the lock-in period.",
+      "whyItMatters": "Clear notice duration prevents abrupt eviction or unexpected lease termination by either party.",
+      "questionToAsk": "What is the mutual written notice period (e.g., 30 days) required for either party to terminate the tenancy?"
+    },
+    "HOU5": {
+      "id": "HOU5",
+      "title": "Tenant Responsibility for Structural / Pre-Existing Repairs",
+      "kind": "pattern",
+      "type": "pattern",
+      "severity": "medium",
+      "pattern": "(?:tenant shall bear all repairs|tenant responsible for structural repairs|all maintenance and seepage repairs by tenant|tenant liable for all repairs whatsoever)",
+      "plainSummary": "The tenant is made responsible for all repairs including structural defects, seepage, or major plumbing issues.",
+      "whyItMatters": "Standard Indian tenancy practices assign structural repairs, external seepage, and capital maintenance to the landlord, reserving only minor day-to-day fixes for the tenant.",
+      "questionToAsk": "Can major structural repairs, dampness/seepage, and roof/masonry maintenance be explicitly assigned to the landlord?"
+    },
+    "HOU6": {
+      "id": "HOU6",
+      "title": "Joint Inspection & Handover Inventory Clause",
+      "kind": "missing",
+      "type": "missing",
+      "severity": "low",
+      "pattern": "(?:joint inspection|handover inventory|condition report|fixtures and fittings schedule|meter readings at handover)",
+      "plainSummary": "The agreement lacks a signed fixtures inventory and move-in inspection schedule.",
+      "whyItMatters": "A signed condition schedule protects both parties against contentious deposit disputes regarding pre-existing wear.",
+      "questionToAsk": "Can an annexed list of electrical fittings, appliances, and current utility meter readings be signed during handover?"
+    },
+    "HOU7": {
+      "id": "HOU7",
+      "title": "Unilateral Possession Delay Without Compensation",
+      "kind": "pattern",
+      "type": "pattern",
+      "severity": "high",
+      "pattern": "(?:grace period of \\d+ months without compensation|possession date tentative|builder not liable for any delay|no interest payable for delayed possession)",
+      "plainSummary": "The builder agreement disclaims liability or interest compensation for delayed apartment possession.",
+      "whyItMatters": "Section 18 of the Real Estate (Regulation and Development) Act (RERA) mandates that promoters pay interest at prescribed rates for every month of delay.",
+      "questionToAsk": "Are RERA statutory interest provisions for delayed handover incorporated into the possession clause?"
+    },
+    "HOU8": {
+      "id": "HOU8",
+      "title": "RERA Registration Number Disclosure",
+      "kind": "missing",
+      "type": "missing",
+      "severity": "high",
+      "pattern": "(?:rera registration|pr/kn/|maha rera|rera no|rera approved|rera/)",
+      "plainSummary": "The agreement does not prominently cite the project's official state RERA registration number.",
+      "whyItMatters": "Selling or advertising real estate without valid RERA registration is illegal under Section 3 of RERA.",
+      "questionToAsk": "What is the exact state RERA project registration number and authorized completion date on the RERA portal?"
+    },
+    "HOU9": {
+      "id": "HOU9",
+      "title": "Severe Booking Amount Forfeiture / Penalty",
+      "kind": "pattern",
+      "type": "pattern",
+      "severity": "medium",
+      "pattern": "(?:forfeit (?:the entire )?(?:earnest money|booking amount)|forfeiture of \\d+% of total consideration|cancellation charges equal to \\d+%)",
+      "plainSummary": "The contract imposes heavy forfeiture of 15–20% of total unit cost upon cancellation.",
+      "whyItMatters": "Consumer Courts and RERA have repeatedly ruled that earnest money forfeiture must be reasonable (typically capped at 10% of booking amount or actual loss).",
+      "questionToAsk": "Is booking cancellation forfeiture capped within reasonable limits (not exceeding 10% of earnest money)?"
+    },
+    "HOU10": {
+      "id": "HOU10",
+      "title": "Carpet Area Specification Clause (RERA Defined)",
+      "kind": "missing",
+      "type": "missing",
+      "severity": "medium",
+      "pattern": "(?:rera carpet area|carpet area of \\d+|net usable floor area)",
+      "plainSummary": "The agreement references ambiguous super built-up area without explicitly defining RERA Carpet Area.",
+      "whyItMatters": "Under RERA, properties must be sold and priced on RERA Carpet Area rather than subjective super built-up proportions.",
+      "questionToAsk": "What is the certified RERA Carpet Area (in square feet/meters) excluding balconies and external walls?"
+    }
+  }
+}
