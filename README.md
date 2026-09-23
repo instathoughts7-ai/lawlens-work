@@ -98,6 +98,34 @@ Automated testing using `vitest-axe` (`axe-core`) confirms zero automated violat
 
 ---
 
+## Deployment
+
+LawLens Work compiles to a fully static web application (`dist/`) requiring no dynamic backend server, containerized runtime, or server-side process. Any static web host or CDN can serve the output.
+
+### Deploying to Firebase Hosting
+
+A pre-configured `firebase.json` and `.firebaserc` template are included in the repository. To deploy:
+
+1. **Initialize Hosting** (first time only):
+   ```bash
+   firebase init hosting
+   ```
+   - Select **Use an existing project** (or create a new project ID).
+   - Set public directory to: `dist`
+   - Configure as a single-page app (rewrite all urls to `/index.html`): `Yes`
+   - Set up automatic builds and deploys with GitHub: `No` (or as desired)
+   - Overwrite `dist/index.html` if prompted: `No`
+
+2. **Build and Deploy**:
+   ```bash
+   npm run build
+   firebase deploy --only hosting
+   ```
+
+> **Static Hosting Only**: This setup uses Firebase Hosting strictly for static CDN asset hosting. No Firebase cloud services (Firestore database, Firebase Authentication, Cloud Functions, or Firebase Analytics/telemetry) are used or included in the application bundle. All analysis, rule evaluation, and PII redaction execute 100% client-side in the user's browser, maintaining the zero-telemetry and offline privacy model documented in [ARCHITECTURE.md](ARCHITECTURE.md) and [SECURITY.md](SECURITY.md).
+
+---
+
 ## Limitations and roadmap
 
 The application intentionally uses a deterministic, rule-based engine rather than a live generative AI model to guarantee predictable execution, avoid prompt injection vulnerabilities, prevent hallucinations, and ensure complete user data privacy. Contractual and statutory standards (such as notice buyout rules, overtime provisions, and RTO mandates) vary across Indian state amendments and specific collective bargaining agreements; findings are informational checks and not formal legal advice. Future roadmap items include an optional, privacy-preserving server-side AI plain-language layer that performs pre-transmission client redaction, strict rate limiting, and zero-retention processing.

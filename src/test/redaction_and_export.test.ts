@@ -3,6 +3,7 @@ import {
   redactSensitiveData,
   generateDraftEmail,
   generateLawyerBrief,
+  prepareRedactedFindingsForMemo,
 } from "../utils/redaction.ts";
 
 describe("Redaction & Export Utilities", () => {
@@ -112,5 +113,40 @@ describe("Redaction & Export Utilities", () => {
       false
     );
     expect(briefRaw).toContain("legal@firm.in");
+  });
+
+  it("prepareRedactedFindingsForMemo strips raw context and redacts sensitive PII in excerpts", () => {
+    const findings = [
+      {
+        checkId: "NP1",
+        title: "Asymmetric Notice Period",
+        severity: "high",
+        plainSummary: "90-day employee notice vs 30-day employer notice.",
+        exactQuote:
+          "For inquiries, email hr@company.com or phone +91-9988776655. Notice required: 90 days.",
+        whyItMatters: "Burdensome notice obligation.",
+        questionToAsk: "Can notice be mutual at 30 days?",
+      },
+      {
+        checkId: "SC1",
+        title: "Missing Relieving Letter Clause",
+        severity: "medium",
+        plainSummary: "Offer omits unconditional exit documentation commitment.",
+        exactQuote: null,
+        whyItMatters: "Essential for next employment.",
+        questionToAsk: "Will an experience and relieving letter be issued?",
+      },
+    ];
+
+    const prepared = prepareRedactedFindingsForMemo(findings);
+
+    expect(prepared).toHaveLength(2);
+    expect(prepared[0].checkId).toBe("NP1");
+    expect(prepared[0].exactQuote).not.toContain("hr@company.com");
+    expect(prepared[0].exactQuote).toContain("[REDACTED EMAIL]");
+    expect(prepared[0].exactQuote).not.toContain("+91-9988776655");
+    expect(prepared[0].exactQuote).toContain("[REDACTED PHONE]");
+    expect(prepared[0].exactQuote).toContain("Notice required: 90 days.");
+    expect(prepared[1].exactQuote).toBeNull();
   });
 });

@@ -54,3 +54,21 @@ export interface ScenariosConfig {
 }
 
 export type NavLevel = "domains" | "sections" | "topics" | "analysis";
+
+export interface ClauseRationale {
+  title: string;
+  severity: string;
+  rationale: string;
+  negotiationGoal: string;
+}
+
+export interface NegotiationEmail {
+  subject: string;
+  body: string;
+}
+
+export interface NegotiationMemo {
+  executiveSummary: string;
+  clauseRationales: ClauseRationale[];
+  negotiationEmail: NegotiationEmail;
+}

@@ -61,6 +61,14 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-slate-50/50 text-slate-900 flex flex-col font-sans antialiased">
+      {/* Skip to main content keyboard accessibility link */}
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50 focus:px-4 focus:py-2 focus:bg-indigo-600 focus:text-white focus:rounded-md focus:shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 text-xs font-semibold"
+      >
+        Skip to main content
+      </a>
+
       {/* Primary Header landmark with single h1 */}
       <header
         role="banner"
@@ -72,7 +80,7 @@ export default function App() {
               type="button"
               onClick={handleBackToDomains}
               aria-label="LawLens Work Home"
-              className="w-10 h-10 rounded-lg bg-indigo-600 text-white flex items-center justify-center shrink-0 shadow-xs cursor-pointer hover:bg-indigo-700 transition-colors focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+              className="w-10 h-10 rounded-lg bg-indigo-600 text-white flex items-center justify-center shrink-0 shadow-xs cursor-pointer hover:bg-indigo-700 transition-colors focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:outline-none"
             >
               <Scale className="w-5 h-5" aria-hidden="true" />
             </button>
@@ -80,7 +88,7 @@ export default function App() {
               <h1 className="text-xl font-bold tracking-tight text-slate-900 leading-tight">
                 LawLens Work
               </h1>
-              <p className="text-xs text-slate-500 hidden sm:block">
+              <p className="text-xs text-slate-600 hidden sm:block">
                 Helps people in India read their own legal documents • Info
                 only, never legal advice
               </p>
@@ -104,8 +112,7 @@ export default function App() {
                   type="button"
                   disabled={isDisabled}
                   onClick={() => handleSelectDomain(dom)}
-                  aria-disabled={isDisabled}
-                  className={`px-3 py-1.5 rounded text-xs font-semibold whitespace-nowrap transition-colors flex items-center gap-1.5 ${
+                  className={`px-3 py-1.5 rounded text-xs font-semibold whitespace-nowrap transition-colors flex items-center gap-1.5 focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:outline-none ${
                     isActiveDomain && !isDisabled
                       ? "bg-indigo-50 text-indigo-700 border border-indigo-200 font-bold"
                       : isDisabled
@@ -115,7 +122,7 @@ export default function App() {
                 >
                   <span>{dom.label}</span>
                   {isDisabled && (
-                    <span className="text-[10px] font-normal text-slate-400">
+                    <span className="text-[10px] font-normal text-slate-500">
                       (soon)
                     </span>
                   )}
@@ -131,70 +138,74 @@ export default function App() {
             aria-label="Breadcrumb"
             className="max-w-4xl mx-auto flex items-center gap-1.5 text-xs text-slate-600 overflow-x-auto whitespace-nowrap"
           >
-            <button
-              type="button"
-              onClick={handleBackToDomains}
-              className={`hover:text-indigo-600 font-medium ${
-                viewLevel === "domains"
-                  ? "text-indigo-600 font-bold"
-                  : "cursor-pointer"
-              }`}
-            >
-              Domains
-            </button>
-
-            {viewLevel !== "domains" && (
-              <>
-                <ChevronRight
-                  className="w-3.5 h-3.5 text-slate-400 shrink-0"
-                  aria-hidden="true"
-                />
+            <ol className="flex items-center gap-1.5 list-none m-0 p-0">
+              <li className="flex items-center">
                 <button
                   type="button"
-                  onClick={handleBackToSections}
-                  className={`hover:text-indigo-600 font-medium ${
-                    viewLevel === "sections"
+                  onClick={handleBackToDomains}
+                  className={`hover:text-indigo-600 font-medium focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:outline-none rounded px-1 -mx-1 ${
+                    viewLevel === "domains"
                       ? "text-indigo-600 font-bold"
                       : "cursor-pointer"
                   }`}
                 >
-                  {selectedDomain.label}
+                  Domains
                 </button>
-              </>
-            )}
+              </li>
 
-            {(viewLevel === "topics" || viewLevel === "analysis") &&
-              selectedSection && (
-                <>
+              {viewLevel !== "domains" && (
+                <li className="flex items-center gap-1.5">
                   <ChevronRight
                     className="w-3.5 h-3.5 text-slate-400 shrink-0"
                     aria-hidden="true"
                   />
                   <button
                     type="button"
-                    onClick={handleBackToTopics}
-                    className={`hover:text-indigo-600 font-medium ${
-                      viewLevel === "topics"
+                    onClick={handleBackToSections}
+                    className={`hover:text-indigo-600 font-medium focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:outline-none rounded px-1 -mx-1 ${
+                      viewLevel === "sections"
                         ? "text-indigo-600 font-bold"
                         : "cursor-pointer"
                     }`}
                   >
-                    {selectedSection.label}
+                    {selectedDomain.label}
                   </button>
-                </>
+                </li>
               )}
 
-            {viewLevel === "analysis" && selectedTopic && (
-              <>
-                <ChevronRight
-                  className="w-3.5 h-3.5 text-slate-400 shrink-0"
-                  aria-hidden="true"
-                />
-                <span className="text-indigo-600 font-bold" aria-current="page">
-                  {selectedTopic.label}
-                </span>
-              </>
-            )}
+              {(viewLevel === "topics" || viewLevel === "analysis") &&
+                selectedSection && (
+                  <li className="flex items-center gap-1.5">
+                    <ChevronRight
+                      className="w-3.5 h-3.5 text-slate-400 shrink-0"
+                      aria-hidden="true"
+                    />
+                    <button
+                      type="button"
+                      onClick={handleBackToTopics}
+                      className={`hover:text-indigo-600 font-medium focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:outline-none rounded px-1 -mx-1 ${
+                        viewLevel === "topics"
+                          ? "text-indigo-600 font-bold"
+                          : "cursor-pointer"
+                      }`}
+                    >
+                      {selectedSection.label}
+                    </button>
+                  </li>
+                )}
+
+              {viewLevel === "analysis" && selectedTopic && (
+                <li className="flex items-center gap-1.5">
+                  <ChevronRight
+                    className="w-3.5 h-3.5 text-slate-400 shrink-0"
+                    aria-hidden="true"
+                  />
+                  <span className="text-indigo-600 font-bold" aria-current="page">
+                    {selectedTopic.label}
+                  </span>
+                </li>
+              )}
+            </ol>
           </nav>
         </div>
       </header>
@@ -203,7 +214,8 @@ export default function App() {
       <main
         id="main-content"
         role="main"
-        className="flex-1 max-w-4xl w-full mx-auto px-4 sm:px-6 py-6"
+        tabIndex={-1}
+        className="flex-1 max-w-4xl w-full mx-auto px-4 sm:px-6 py-6 focus:outline-none"
       >
         {/* LEVEL 1: Domain tabs / cards */}
         {viewLevel === "domains" && (

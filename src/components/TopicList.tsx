@@ -27,7 +27,7 @@ export const TopicList: React.FC<TopicListProps> = ({
             type="button"
             id="back-to-sections-button"
             onClick={onBack}
-            className="text-xs font-semibold text-indigo-600 hover:text-indigo-800 flex items-center gap-1 cursor-pointer mb-1.5"
+            className="text-xs font-semibold text-indigo-600 hover:text-indigo-800 flex items-center gap-1 cursor-pointer mb-1.5 focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:outline-none rounded px-1 -mx-1"
           >
             <ArrowLeft className="w-3.5 h-3.5" aria-hidden="true" />
             Back to Sections
@@ -50,7 +50,7 @@ export const TopicList: React.FC<TopicListProps> = ({
               id={`topic-item-${topic.id}`}
               type="button"
               onClick={() => onSelectTopic(topic)}
-              className={`p-4 bg-white border rounded-lg text-left transition-all flex items-center justify-between cursor-pointer group ${
+              className={`p-4 bg-white border rounded-lg text-left transition-all flex items-center justify-between cursor-pointer group focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:outline-none ${
                 isWired
                   ? "border-indigo-200 hover:border-indigo-400 hover:shadow-xs ring-1 ring-indigo-50/50"
                   : "border-slate-200 hover:border-slate-300 hover:bg-slate-50/60"

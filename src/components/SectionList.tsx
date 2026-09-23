@@ -1,5 +1,6 @@
 import React from "react";
 import { Domain, Section } from "../types.ts";
+import { isTopicWiredUp } from "../engine/engine.ts";
 import { ChevronRight, FolderOpen, ArrowLeft, CheckCircle } from "lucide-react";
 
 interface SectionListProps {
@@ -26,7 +27,7 @@ export const SectionList: React.FC<SectionListProps> = ({
             type="button"
             id="back-to-domains-button"
             onClick={onBack}
-            className="text-xs font-semibold text-indigo-600 hover:text-indigo-800 flex items-center gap-1 cursor-pointer mb-1.5"
+            className="text-xs font-semibold text-indigo-600 hover:text-indigo-800 flex items-center gap-1 cursor-pointer mb-1.5 focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:outline-none rounded px-1 -mx-1"
           >
             <ArrowLeft className="w-3.5 h-3.5" aria-hidden="true" />
             Back to Domains
@@ -43,8 +44,8 @@ export const SectionList: React.FC<SectionListProps> = ({
       {/* Sections List */}
       <div className="grid grid-cols-1 gap-3">
         {domain.sections.map((section) => {
-          const hasWiredTopic = section.topics.some(
-            (t) => t.id === "notice_length" || t.id === "rto_location"
+          const hasWiredTopic = section.topics.some((t) =>
+            isTopicWiredUp(t.id)
           );
 
           return (
@@ -53,7 +54,7 @@ export const SectionList: React.FC<SectionListProps> = ({
               id={`section-item-${section.id}`}
               type="button"
               onClick={() => onSelectSection(section)}
-              className="p-4 bg-white border border-slate-200 hover:border-indigo-400 hover:shadow-xs rounded-lg text-left transition-all flex items-center justify-between cursor-pointer group"
+              className="p-4 bg-white border border-slate-200 hover:border-indigo-400 hover:shadow-xs rounded-lg text-left transition-all flex items-center justify-between cursor-pointer group focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:outline-none"
             >
               <div className="flex items-start gap-3">
                 <div className="w-8 h-8 rounded bg-indigo-50 text-indigo-700 flex items-center justify-center shrink-0 mt-0.5">

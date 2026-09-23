@@ -58,7 +58,7 @@ function extractMatchingSentence(text: string, regex: RegExp): string | null {
  * Handles single string inputs, arrays of strings, and document marker splits
  * like "=== DOCUMENT A ===" and "=== DOCUMENT B ===".
  */
-function normalizeInputs(topicId: string, input: string | string[]): string[] {
+function normalizeInputs(input: string | string[]): string[] {
   if (Array.isArray(input)) {
     return input;
   }
@@ -130,7 +130,7 @@ export function analyze(
     return [];
   }
 
-  const inputs = normalizeInputs(topic.id, input);
+  const inputs = normalizeInputs(input);
   const text = inputs.join("\n\n");
   const findings: Finding[] = [];
 

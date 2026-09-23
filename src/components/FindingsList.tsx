@@ -89,7 +89,7 @@ export const FindingsList: React.FC<FindingsListProps> = ({
                     >
                       {finding.severity} severity
                     </span>
-                    <span className="text-xs font-mono font-medium text-slate-400">
+                    <span className="text-xs font-mono font-medium text-slate-500">
                       Check {finding.checkId}
                     </span>
                   </div>

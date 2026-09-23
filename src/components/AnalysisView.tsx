@@ -310,7 +310,7 @@ export const AnalysisView: React.FC<AnalysisViewProps> = ({
                 type="button"
                 id="load-sample-button"
                 onClick={handleLoadSample}
-                className="text-xs font-semibold text-indigo-600 hover:text-indigo-800 hover:underline flex items-center gap-1 cursor-pointer py-1 px-2 rounded hover:bg-indigo-50 transition-colors"
+                className="text-xs font-semibold text-indigo-600 hover:text-indigo-800 hover:underline flex items-center gap-1 cursor-pointer py-1 px-2 rounded hover:bg-indigo-50 transition-colors focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:outline-none"
               >
                 <Sparkles className="w-3.5 h-3.5" aria-hidden="true" />
                 {getSampleButtonLabel()}
@@ -327,6 +327,7 @@ export const AnalysisView: React.FC<AnalysisViewProps> = ({
               value={inputA}
               onChange={(e) => setInputA(e.target.value)}
               placeholder={getDocAPlaceholder()}
+              aria-describedby="doc-a-char-count"
               className="w-full p-3.5 border border-slate-300 rounded-lg text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 font-mono bg-white resize-y"
             />
             <div className="flex justify-end">
@@ -335,7 +336,7 @@ export const AnalysisView: React.FC<AnalysisViewProps> = ({
                 className={`text-[11px] font-mono ${
                   inputA.length >= MAX_INPUT_CHARS
                     ? "text-rose-600 font-bold"
-                    : "text-slate-400"
+                    : "text-slate-500"
                 }`}
               >
                 {inputA.length.toLocaleString()} / 20,000 characters
@@ -363,6 +364,7 @@ export const AnalysisView: React.FC<AnalysisViewProps> = ({
                 value={inputB}
                 onChange={(e) => setInputB(e.target.value)}
                 placeholder={getDocBPlaceholder()}
+                aria-describedby="doc-b-char-count"
                 className="w-full p-3.5 border border-slate-300 rounded-lg text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 font-mono bg-white resize-y"
               />
               <div className="flex justify-end">
@@ -371,7 +373,7 @@ export const AnalysisView: React.FC<AnalysisViewProps> = ({
                   className={`text-[11px] font-mono ${
                     inputB.length >= MAX_INPUT_CHARS
                       ? "text-rose-600 font-bold"
-                      : "text-slate-400"
+                      : "text-slate-500"
                   }`}
                 >
                   {inputB.length.toLocaleString()} / 20,000 characters
@@ -389,7 +391,7 @@ export const AnalysisView: React.FC<AnalysisViewProps> = ({
               disabled={
                 isTwoDoc ? !inputA.trim() || !inputB.trim() : !inputA.trim()
               }
-              className="flex-1 sm:flex-none px-6 py-3 bg-indigo-600 hover:bg-indigo-700 disabled:bg-slate-200 disabled:text-slate-400 disabled:cursor-not-allowed text-white font-semibold text-sm rounded-lg shadow-xs transition-colors flex items-center justify-center gap-2 cursor-pointer"
+              className="flex-1 sm:flex-none px-6 py-3 bg-indigo-600 hover:bg-indigo-700 disabled:bg-slate-200 disabled:text-slate-400 disabled:cursor-not-allowed text-white font-semibold text-sm rounded-lg shadow-xs transition-colors flex items-center justify-center gap-2 cursor-pointer focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:outline-none"
             >
               <span>Analyze Document</span>
               <ArrowRight className="w-4 h-4" aria-hidden="true" />
@@ -400,7 +402,7 @@ export const AnalysisView: React.FC<AnalysisViewProps> = ({
                 type="button"
                 id="clear-inputs-button"
                 onClick={handleClear}
-                className="px-4 py-3 border border-slate-300 hover:bg-slate-100 text-slate-700 text-sm font-medium rounded-lg transition-colors flex items-center gap-1.5 cursor-pointer"
+                className="px-4 py-3 border border-slate-300 hover:bg-slate-100 text-slate-700 text-sm font-medium rounded-lg transition-colors flex items-center gap-1.5 cursor-pointer focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:outline-none"
               >
                 <Trash2 className="w-4 h-4 text-slate-500" aria-hidden="true" />
                 <span>Clear</span>

@@ -146,3 +146,31 @@ export function generateLawyerBrief(
 
   return redact ? redactSensitiveData(brief) : brief;
 }
+
+/**
+ * Prepares deterministic findings for the Negotiation Memo API.
+ * CRITICAL PRIVACY BOUNDARY:
+ * Strips raw document context and ensures any exact quotes are strictly client-side redacted
+ * before network transmission.
+ */
+export function prepareRedactedFindingsForMemo(
+  findings: Array<{
+    checkId: string;
+    title: string;
+    severity: string;
+    plainSummary: string;
+    exactQuote: string | null;
+    whyItMatters: string;
+    questionToAsk: string;
+  }>
+) {
+  return findings.map((f) => ({
+    checkId: f.checkId,
+    title: f.title,
+    severity: f.severity,
+    plainSummary: f.plainSummary,
+    exactQuote: f.exactQuote ? redactSensitiveData(f.exactQuote) : null,
+    whyItMatters: f.whyItMatters,
+    questionToAsk: f.questionToAsk,
+  }));
+}

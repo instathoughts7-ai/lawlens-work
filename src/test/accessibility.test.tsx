@@ -10,6 +10,7 @@ import { SectionList } from "../components/SectionList.tsx";
 import { TopicList } from "../components/TopicList.tsx";
 import { AnalysisView } from "../components/AnalysisView.tsx";
 import { ExportView } from "../components/ExportView.tsx";
+import App from "../App.tsx";
 
 const scenariosData = scenariosDataRaw as ScenariosConfig;
 
@@ -100,5 +101,16 @@ describe("Accessibility Audit (vitest-axe) across all 4 screen levels", () => {
     );
     const results = await axe(container);
     (expect(results) as any).toHaveNoViolations();
+  });
+
+  // Full App axe test
+  it("Full App renders with no accessibility violations and contains skip-to-content link", async () => {
+    const { container } = render(<App />);
+    const results = await axe(container);
+    (expect(results) as any).toHaveNoViolations();
+
+    const skipLink = container.querySelector('a[href="#main-content"]');
+    expect(skipLink).not.toBeNull();
+    expect(skipLink?.textContent?.trim()).toBe("Skip to main content");
   });
 });

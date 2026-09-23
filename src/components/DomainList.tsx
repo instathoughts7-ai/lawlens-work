@@ -86,7 +86,7 @@ export const DomainList: React.FC<DomainListProps> = ({
                 }
               }}
               aria-disabled={isDisabled}
-              className={`p-5 text-left border rounded-lg transition-all relative flex flex-col justify-between ${
+              className={`p-5 text-left border rounded-lg transition-all relative flex flex-col justify-between focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:outline-none ${
                 !isDisabled
                   ? "bg-white border-indigo-200 hover:border-indigo-400 hover:shadow-xs cursor-pointer ring-1 ring-indigo-50"
                   : "bg-slate-50/70 border-slate-200 opacity-65 cursor-not-allowed select-none"
@@ -108,7 +108,7 @@ export const DomainList: React.FC<DomainListProps> = ({
                   </div>
 
                   {isDisabled ? (
-                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-semibold uppercase tracking-wider bg-slate-200 text-slate-600">
+                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-semibold uppercase tracking-wider bg-slate-200 text-slate-700">
                       <Lock className="w-3 h-3" aria-hidden="true" />
                       Coming soon
                     </span>
@@ -139,7 +139,7 @@ export const DomainList: React.FC<DomainListProps> = ({
                     </span>
                   </>
                 ) : (
-                  <span className="text-slate-400">Under development</span>
+                  <span className="text-slate-500">Under development</span>
                 )}
               </div>
             </button>
