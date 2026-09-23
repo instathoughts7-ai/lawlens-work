@@ -21,13 +21,7 @@ export const DisclaimerBanner: React.FC<DisclaimerBannerProps> = ({
       />
       <div>
         <span className="font-semibold text-amber-950">Important Notice: </span>
-        LawLens Work provides legal information and automated pattern checks for
-        self-review purposes in India. It is strictly{" "}
-        <strong className="font-semibold text-amber-950">
-          not legal advice
-        </strong>{" "}
-        and does not create an advocate-client relationship. For formal disputes
-        or binding legal counsel, consult a licensed Indian advocate.
+        Information only, not legal advice. Check important decisions with a qualified professional.
       </div>
     </div>
   );
