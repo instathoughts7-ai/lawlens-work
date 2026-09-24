@@ -93,6 +93,25 @@ const ALLOWED_FINDING_KEYS = new Set([
 ]);
 const ALLOWED_SEVERITIES = new Set(['high', 'medium', 'low', 'info']);
 
+// Singleton GoogleGenAI client to enable HTTP keep-alive connection reuse and avoid per-request allocations
+let cachedAiClient: GoogleGenAI | null = null;
+let lastApiKey: string | null = null;
+
+function getAiClient(apiKey: string): GoogleGenAI {
+  if (!cachedAiClient || lastApiKey !== apiKey) {
+    cachedAiClient = new GoogleGenAI({
+      apiKey,
+      httpOptions: {
+        headers: {
+          'User-Agent': 'aistudio-build',
+        },
+      },
+    });
+    lastApiKey = apiKey;
+  }
+  return cachedAiClient;
+}
+
 // Server-side LRU cache to guarantee maximum 1 Gemini request per unique sanitized analysis state
 interface CachedMemoEntry {
   memo: any;
@@ -257,6 +276,22 @@ app.post('/api/summarize-findings', async (req: Request, res: Response) => {
       });
     }
 
+    const cleanDomain = sanitizeServerText(domainLabel.trim(), 80);
+    const cleanTopic = sanitizeServerText(topicLabel.trim(), 80);
+
+    // Compute deterministic server cache key from sanitized inputs sorted by checkId (matching client-side ordering guarantee)
+    const sortedSanitizedFindings = [...sanitizedFindings].sort((a, b) => a.checkId.localeCompare(b.checkId));
+    const serverCacheKey = `${cleanDomain}:${cleanTopic}:${sortedSanitizedFindings.length}:${sortedSanitizedFindings
+      .map((f) => `${f.checkId}:${f.severity}:${(f.exactQuote || "").slice(0, 40)}`)
+      .join("|")}`;
+
+    // Efficiency: Return cached memo immediately before executing any upstream calls or client checks
+    const cachedMemo = getServerCachedMemo(serverCacheKey);
+    if (cachedMemo) {
+      res.json({ memo: cachedMemo, cached: true });
+      return;
+    }
+
     // Verify server-side API key presence without exposing it
     const apiKey = process.env.GEMINI_API_KEY;
     if (!apiKey) {
@@ -264,29 +299,8 @@ app.post('/api/summarize-findings', async (req: Request, res: Response) => {
       return;
     }
 
-    // Initialize GoogleGenAI strictly server-side with telemetry header
-    const ai = new GoogleGenAI({
-      apiKey,
-      httpOptions: {
-        headers: {
-          'User-Agent': 'aistudio-build',
-        },
-      },
-    });
-
-    const cleanDomain = sanitizeServerText(domainLabel.trim(), 80);
-    const cleanTopic = sanitizeServerText(topicLabel.trim(), 80);
-
-    // Compute deterministic server cache key from sanitized inputs
-    const serverCacheKey = `${cleanDomain}:${cleanTopic}:${sanitizedFindings.length}:${sanitizedFindings
-      .map((f) => `${f.checkId}:${f.severity}:${(f.exactQuote || "").slice(0, 40)}`)
-      .join("|")}`;
-
-    const cachedMemo = getServerCachedMemo(serverCacheKey);
-    if (cachedMemo) {
-      res.json({ memo: cachedMemo, cached: true });
-      return;
-    }
+    // Reuse singleton GoogleGenAI client with keep-alive connection pooling
+    const ai = getAiClient(apiKey);
 
     // Check if identical request is already in-flight from another concurrent caller
     let memoPromise = serverInFlightRequests.get(serverCacheKey);

@@ -23,11 +23,37 @@ const SEVERITY_WEIGHT: Record<Severity, number> = {
 
 const IMPLEMENTED_HANDLERS = new Set(["NP1", "RTO1", "RTO2", "PS1", "LV1"]);
 
+// Pre-compiled RegExp cache for scenarios patterns to avoid recompiling on every analyze call
+const patternRegexCache = new Map<string, RegExp>();
+function getCompiledPatternRegex(pattern: string): RegExp {
+  let reg = patternRegexCache.get(pattern);
+  if (!reg) {
+    reg = new RegExp(pattern, "i");
+    patternRegexCache.set(pattern, reg);
+  }
+  return reg;
+}
+
+// Pre-built topic lookup map for O(1) lookup by ID or label
+const topicLookupMap = new Map<string, Topic>();
+for (const domain of scenariosData.domains) {
+  if (domain.sections) {
+    for (const section of domain.sections) {
+      for (const topic of section.topics) {
+        topicLookupMap.set(topic.id.toLowerCase(), topic);
+        topicLookupMap.set(topic.label.toLowerCase(), topic);
+      }
+    }
+  }
+}
+
+const SENTENCE_SPLIT_REGEX = /[^.!?\n]+(?:[.!?\n]+|$)/g;
+
 /**
  * Extracts a verbatim sentence or clause matching the regex from the text.
  */
 function extractMatchingSentence(text: string, regex: RegExp): string | null {
-  const sentences = text.match(/[^.!?\n]+(?:[.!?\n]+|$)/g);
+  const sentences = text.match(SENTENCE_SPLIT_REGEX);
   if (sentences) {
     for (const rawSentence of sentences) {
       const sentence = rawSentence.trim();
@@ -81,18 +107,7 @@ function normalizeInputs(input: string | string[]): string[] {
  */
 export function findTopic(topicIdOrLabel: string): Topic | null {
   const target = (topicIdOrLabel || "").trim().toLowerCase();
-  for (const domain of scenariosData.domains) {
-    if (domain.sections) {
-      for (const section of domain.sections) {
-        const found = section.topics.find(
-          (t) =>
-            t.id.toLowerCase() === target || t.label.toLowerCase() === target
-        );
-        if (found) return found;
-      }
-    }
-  }
-  return null;
+  return topicLookupMap.get(target) || null;
 }
 
 /**
@@ -150,7 +165,7 @@ export function analyze(
       }
     } else if (kind === "pattern") {
       if (checkDef.pattern) {
-        const regex = new RegExp(checkDef.pattern, "i");
+        const regex = getCompiledPatternRegex(checkDef.pattern);
         if (regex.test(text)) {
           const exactQuote = extractMatchingSentence(text, regex);
           findings.push({
@@ -169,7 +184,7 @@ export function analyze(
       }
     } else if (kind === "missing") {
       if (checkDef.pattern) {
-        const regex = new RegExp(checkDef.pattern, "i");
+        const regex = getCompiledPatternRegex(checkDef.pattern);
         if (!regex.test(text)) {
           findings.push({
             checkId: checkDef.id,

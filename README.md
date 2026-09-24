@@ -88,13 +88,19 @@ npm run build
 
 ## Testing
 
-The test suite consists of **51 passing tests** across **5 test files** with **74.07% line coverage** and **72.16% statement coverage** (`vitest run --coverage`):
+The test suite consists of **115 passing tests** across **11 test files** (`vitest run`):
 
 - `src/test/pattern_missing_topics.test.ts` (21 tests): Validates pattern-matching regexes and missing-clause detection across Consumer, Family, Housing, and Employee topics against real fixture samples.
 - `src/test/handlers.test.ts` (18 tests): Tests deterministic logic handlers (`NP1` notice asymmetry, `RTO1` location conflicts, `RTO2` schedule quotas, `PS1` payslip deductions, `LV1` leave policy discrepancies).
-- `src/test/accessibility.test.tsx` (5 tests): Performs automated DOM accessibility audits across all 4 navigation levels (DomainList, SectionList, TopicList, AnalysisView) using `vitest-axe`.
+- `src/test/boundaries_and_comparisons.test.ts` (16 tests): Validates input character limits (20,000 chars), edge-case formatting, and dual-document splitters.
+- `src/test/user_journey.test.ts` (15 tests): Tests end-to-end user navigation flows from Domain selection to Findings and Export.
+- `src/test/memo_efficiency.test.ts` (10 tests): Validates client and server memo caching, in-flight request deduplication, and cache size bounds.
+- `src/test/security_boundary.test.ts` (8 tests): Tests payload whitelisting, rate limiting, and PII protection on API endpoints.
+- `src/test/memo_api.test.ts` (7 tests): Tests Gemini memo API schema validation, error handling, and status code propagation.
+- `src/test/engine_efficiency.test.ts` (6 tests): Validates O(1) topic lookups, regex compilation caching, and single-pass location extraction.
+- `src/test/accessibility.test.tsx` (6 tests): Performs automated DOM accessibility audits across all 4 navigation levels (DomainList, SectionList, TopicList, AnalysisView) using `vitest-axe`.
 - `src/test/injection_and_exact_quote.test.ts` (4 tests): Verifies prompt-injection resistance, verbatim excerpt substring extraction, and whitespace/empty input handling.
-- `src/test/redaction_and_export.test.ts` (3 tests): Tests client-side PII redaction (email, PAN, Aadhaar, phone numbers, long digits) and structured consultation export generation.
+- `src/test/redaction_and_export.test.ts` (4 tests): Tests client-side PII redaction (email, PAN, Aadhaar, phone numbers, long digits) and structured consultation export generation.
 
 Testing uses a fixture-based approach with realistic sample documents located in `samples/` (e.g., `basic_rights_offer.txt`, `consumer_contracts.txt`, `early_release.txt`, `employee_clauses.txt`, `family_deeds.txt`, `housing_contracts.txt`, `notice_period.txt`, `rto_documents.txt`) verified against expected findings.
 
@@ -102,7 +108,11 @@ Testing uses a fixture-based approach with realistic sample documents located in
 
 ## Security and privacy
 
-LawLens Work operates entirely client-side with zero backend server, zero database persistence, and zero outbound network calls with document data. Text pasted into the application remains in ephemeral React component state and is discarded upon navigation or clearing inputs. A strict 20,000-character input boundary prevents browser thread exhaustion, while client-side export features automatically mask sensitive identifiers (emails, phone numbers, PAN, Aadhaar, and bank account numbers) before copying. For full technical details, refer to [SECURITY.md](SECURITY.md).
+LawLens Work is built on a privacy-first hybrid architecture:
+
+1. **Client-Side Document Sandbox**: All primary document parsing, regex pattern matching, cross-document comparison, and arithmetic checks run exclusively inside the user's browser runtime. Raw contract documents pasted into the application remain in ephemeral React state, are never stored in databases or local storage, and never leave the client browser.
+2. **Strict Privacy Boundary for AI Synthesis**: When generating the optional Negotiation Memo via **Gemini 2.5 Flash**, raw contracts remain strictly on the client. Only pre-redacted clause excerpts (capped at 400 characters) and finding metadata are sent to `/api/summarize-findings`. Client-side redaction automatically masks emails, phone numbers, PAN, Aadhaar, and bank accounts prior to transmission.
+3. **Defensive API Guardrails**: The server enforces a strict JSON schema whitelist (`ALLOWED_TOP_LEVEL_KEYS`, `ALLOWED_FINDING_KEYS`, `ALLOWED_SEVERITIES`), an in-memory sliding window rate limiter (30 requests/minute per IP), server-side PII sanitization as defense-in-depth, hardened HTTP response headers (`nosniff`, `DENY`), and in-memory LRU caching to eliminate redundant upstream AI calls. For full technical details, refer to [SECURITY.md](SECURITY.md).
 
 ---
 
@@ -118,7 +128,10 @@ Automated testing using `vitest-axe` (`axe-core`) confirms zero automated violat
 
 ## Deployment
 
-LawLens Work compiles to a fully static web application (`dist/`) requiring no dynamic backend server, containerized runtime, or server-side process. Any static web host or CDN can serve the output.
+LawLens Work supports flexible deployment models depending on environment requirements:
+
+- **Static Deployment (Firebase Hosting / CDN)**: For purely deterministic, offline-capable client analysis, the frontend compiles to static assets (`dist/`) requiring no server runtime. A pre-configured `firebase.json` and `.firebaserc` are included for deploying to Firebase Hosting (`npm run build && firebase deploy --only hosting`).
+- **Full-Stack Deployment (Cloud Run / Node.js Container)**: To enable the optional Gemini 2.5 Flash Negotiation Memo synthesis (`/api/summarize-findings`), the application runs via `server.ts` (`npm start`), serving the compiled static frontend with the secure backend API proxy.
 
 ### Deploying to Firebase Hosting
 
@@ -140,13 +153,13 @@ A pre-configured `firebase.json` and `.firebaserc` template are included in the 
    firebase deploy --only hosting
    ```
 
-> **Static Hosting Only**: This setup uses Firebase Hosting strictly for static CDN asset hosting. No Firebase cloud services (Firestore database, Firebase Authentication, Cloud Functions, or Firebase Analytics/telemetry) are used or included in the application bundle. All analysis, rule evaluation, and PII redaction execute 100% client-side in the user's browser, maintaining the zero-telemetry and offline privacy model documented in [ARCHITECTURE.md](ARCHITECTURE.md) and [SECURITY.md](SECURITY.md).
+> **Privacy Guarantee**: Regardless of deployment target, all contract parsing, rule evaluation, and PII redaction execute 100% client-side in the user's browser, maintaining the zero-telemetry and offline privacy model documented in [ARCHITECTURE.md](ARCHITECTURE.md) and [SECURITY.md](SECURITY.md).
 
 ---
 
 ## Limitations and roadmap
 
-The application intentionally uses a deterministic, rule-based engine rather than a live generative AI model to guarantee predictable execution, avoid prompt injection vulnerabilities, prevent hallucinations, and ensure complete user data privacy. Contractual and statutory standards (such as notice buyout rules, overtime provisions, and RTO mandates) vary across Indian state amendments and specific collective bargaining agreements; findings are informational checks and not formal legal advice. Future roadmap items include an optional, privacy-preserving server-side AI plain-language layer that performs pre-transmission client redaction, strict rate limiting, and zero-retention processing.
+The application grounds all factual findings in deterministic, rule-based checks to eliminate hallucinations and protect document privacy. Contractual and statutory standards (such as notice buyout rules, overtime provisions, and RTO mandates) vary across Indian state amendments and specific collective bargaining agreements; findings are informational checks and not formal legal advice. Future roadmap items include expanded vernacular language translations (e.g., Hindi, Tamil, Telugu), additional state-specific labor code amendments, and client-side optical character recognition (OCR) for scanned physical documents.
 
 ---
 

@@ -3,10 +3,21 @@ import { app } from "../../server.ts";
 
 function invokeEndpoint(body: any): Promise<{ status: number; body: any }> {
   return new Promise<{ status: number; body: any }>((resolve) => {
-    const req: any = { body };
+    const req: any = {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+      },
+      body,
+      ip: "127.0.0.1",
+      socket: { remoteAddress: "127.0.0.1" },
+    };
     const res: any = {
       status(code: number) {
         this.statusCode = code;
+        return this;
+      },
+      setHeader() {
         return this;
       },
       json(data: any) {

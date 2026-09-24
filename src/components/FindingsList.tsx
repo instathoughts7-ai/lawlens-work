@@ -13,13 +13,14 @@ interface FindingsListProps {
   domain: Domain;
 }
 
-export const FindingsList: React.FC<FindingsListProps> = ({
+export const FindingsList = React.memo<FindingsListProps>(({
   findings,
   domain,
 }) => {
-  // Deduped "Questions to ask" list
-  const dedupedQuestions = Array.from(
-    new Set(findings.map((f) => f.questionToAsk).filter(Boolean))
+  // Deduped "Questions to ask" list memoized to prevent reallocation
+  const dedupedQuestions = React.useMemo(
+    () => Array.from(new Set(findings.map((f) => f.questionToAsk).filter(Boolean))),
+    [findings]
   );
 
   return (
@@ -241,4 +242,6 @@ export const FindingsList: React.FC<FindingsListProps> = ({
       )}
     </div>
   );
-};
+});
+
+FindingsList.displayName = "FindingsList";

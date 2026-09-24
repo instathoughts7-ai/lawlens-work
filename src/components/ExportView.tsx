@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Finding, Domain, Topic, NegotiationMemo } from "../types.ts";
 import {
   generateDraftEmail,
   generateLawyerBrief,
   prepareRedactedFindingsForMemo,
+  computeAnalysisCacheKey,
 } from "../utils/redaction.ts";
 import {
   Mail,
@@ -24,7 +25,7 @@ interface ExportViewProps {
   topic: Topic;
 }
 
-export const ExportView: React.FC<ExportViewProps> = ({
+export const ExportView = React.memo<ExportViewProps>(({
   findings,
   domain,
   topic,
@@ -39,14 +40,31 @@ export const ExportView: React.FC<ExportViewProps> = ({
   const [memoLoading, setMemoLoading] = useState<boolean>(false);
   const [memoError, setMemoError] = useState<string | null>(null);
 
-  const questions = Array.from(
-    new Set(findings.map((f) => f.questionToAsk).filter(Boolean))
+  // Efficiency & Concurrency protection refs
+  const abortControllerRef = useRef<AbortController | null>(null);
+  const inFlightKeyRef = useRef<string | null>(null);
+  const isMountedRef = useRef<boolean>(true);
+
+  useEffect(() => {
+    isMountedRef.current = true;
+    return () => {
+      isMountedRef.current = false;
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
+    };
+  }, []);
+
+  const questions = React.useMemo(
+    () => Array.from(new Set(findings.map((f) => f.questionToAsk).filter(Boolean))),
+    [findings]
   );
 
-  const currentCacheKey = `${domain.id}:${topic.id}:${findings
-    .map((f) => f.checkId)
-    .sort()
-    .join(",")}:${findings.length}`;
+  // Deterministic, collision-free cache key for current findings state
+  const currentCacheKey = React.useMemo(
+    () => computeAnalysisCacheKey(domain.id, topic.id, findings),
+    [domain.id, topic.id, findings]
+  );
   const currentMemo = memoCache[currentCacheKey];
 
   const formatMemoAsText = (memo: NegotiationMemo): string => {
@@ -72,26 +90,36 @@ export const ExportView: React.FC<ExportViewProps> = ({
     return text;
   };
 
-  const exportText =
-    activeTab === "email"
-      ? generateDraftEmail(
-          domain.label,
-          topic.label,
-          findings,
-          questions,
-          redactDetails
-        )
-      : activeTab === "brief"
-      ? generateLawyerBrief(
-          domain.label,
-          topic.label,
-          findings,
-          domain.verify_pointers,
-          redactDetails
-        )
-      : currentMemo
-      ? formatMemoAsText(currentMemo)
-      : "";
+  const exportText = React.useMemo(() => {
+    if (activeTab === "email") {
+      return generateDraftEmail(
+        domain.label,
+        topic.label,
+        findings,
+        questions,
+        redactDetails
+      );
+    }
+    if (activeTab === "brief") {
+      return generateLawyerBrief(
+        domain.label,
+        topic.label,
+        findings,
+        domain.verify_pointers,
+        redactDetails
+      );
+    }
+    return currentMemo ? formatMemoAsText(currentMemo) : "";
+  }, [
+    activeTab,
+    domain.label,
+    topic.label,
+    domain.verify_pointers,
+    findings,
+    questions,
+    redactDetails,
+    currentMemo,
+  ]);
 
   const handleCopy = async () => {
     if (!exportText) return;
@@ -116,8 +144,27 @@ export const ExportView: React.FC<ExportViewProps> = ({
     }
   };
 
-  const handleGenerateMemo = async () => {
-    if (memoLoading) return;
+  const handleGenerateMemo = async (force: boolean = false) => {
+    // 1. Efficiency: Re-use cached result immediately if present; avoid network call unless forced
+    if (!force && memoCache[currentCacheKey]) {
+      setMemoError(null);
+      return;
+    }
+
+    // 2. Efficiency: Prevent duplicate concurrent requests from repeated clicks
+    if (memoLoading || inFlightKeyRef.current === currentCacheKey) {
+      return;
+    }
+
+    // 3. Efficiency: Abort previous pending request if state changed
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+    }
+    const abortController = new AbortController();
+    abortControllerRef.current = abortController;
+
+    const requestedKey = currentCacheKey;
+    inFlightKeyRef.current = requestedKey;
     setMemoLoading(true);
     setMemoError(null);
 
@@ -127,6 +174,7 @@ export const ExportView: React.FC<ExportViewProps> = ({
 
       const response = await fetch("/api/summarize-findings", {
         method: "POST",
+        signal: abortController.signal,
         headers: {
           "Content-Type": "application/json",
         },
@@ -147,25 +195,46 @@ export const ExportView: React.FC<ExportViewProps> = ({
         } catch {
           // Keep generic message
         }
-        setMemoError(errMessage);
+        if (isMountedRef.current && inFlightKeyRef.current === requestedKey) {
+          setMemoError(errMessage);
+        }
         return;
       }
 
       const data = await response.json();
-      if (data && data.memo) {
-        setMemoCache((prev) => ({
-          ...prev,
-          [currentCacheKey]: data.memo,
-        }));
-      } else {
-        setMemoError("Model response was missing required memo structure.");
+      // 4. Stale-request prevention: safely prevent stale results from replacing current result
+      if (isMountedRef.current && inFlightKeyRef.current === requestedKey) {
+        if (data && data.memo) {
+          setMemoCache((prev) => {
+            const next = { ...prev, [requestedKey]: data.memo };
+            const keys = Object.keys(next);
+            // Memory bound: keep maximum 50 entries in client memo cache
+            if (keys.length > 50) {
+              delete next[keys[0]];
+            }
+            return next;
+          });
+        } else {
+          setMemoError("Model response was missing required memo structure.");
+        }
       }
-    } catch {
-      setMemoError(
-        "Network connection error while contacting server. Please check your connection and try again."
-      );
+    } catch (err: unknown) {
+      // If aborted because the user changed state, silently exit without setting error
+      if (err instanceof DOMException && err.name === "AbortError") {
+        return;
+      }
+      if (isMountedRef.current && inFlightKeyRef.current === requestedKey) {
+        setMemoError(
+          "Network connection error while contacting server. Please check your connection and try again."
+        );
+      }
     } finally {
-      setMemoLoading(false);
+      if (inFlightKeyRef.current === requestedKey) {
+        inFlightKeyRef.current = null;
+        if (isMountedRef.current) {
+          setMemoLoading(false);
+        }
+      }
     }
   };
 
@@ -424,7 +493,7 @@ export const ExportView: React.FC<ExportViewProps> = ({
                 <button
                   type="button"
                   id="generate-negotiation-memo-button"
-                  onClick={handleGenerateMemo}
+                  onClick={() => handleGenerateMemo(false)}
                   disabled={memoLoading || findings.length === 0}
                   aria-busy={memoLoading}
                   className="px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 disabled:bg-slate-200 disabled:text-slate-400 disabled:cursor-not-allowed text-white font-semibold text-xs rounded-md shadow-xs transition-colors flex items-center gap-2 cursor-pointer focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:outline-none"
@@ -478,7 +547,7 @@ export const ExportView: React.FC<ExportViewProps> = ({
                   </button>
                   <button
                     type="button"
-                    onClick={handleGenerateMemo}
+                    onClick={() => handleGenerateMemo(true)}
                     disabled={memoLoading}
                     className="px-2.5 py-1 text-xs font-semibold text-slate-600 hover:text-slate-900 bg-white border border-slate-200 rounded hover:bg-slate-50 flex items-center gap-1 cursor-pointer transition-colors shadow-2xs focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:outline-none"
                     title="Regenerate memo"
@@ -582,5 +651,7 @@ export const ExportView: React.FC<ExportViewProps> = ({
       )}
     </section>
   );
-};
+});
+
+ExportView.displayName = "ExportView";
 

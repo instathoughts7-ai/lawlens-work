@@ -3,6 +3,70 @@ import scenariosData from "../data/scenarios.json";
 
 const checks = scenariosData.checks as Record<string, CheckDefinition>;
 
+// Static patterns hoisted to module level to eliminate per-call regex instantiation
+const EMPLOYEE_PATTERN =
+  /\b(employee|executive|consultant|you|staff|resign|resignation)\b/i;
+const COMPANY_PATTERN =
+  /\b(company|employer|management|organization|terminate|termination|discharge|pay in lieu)\b/i;
+const NOTICE_DAYS_REGEX = /(\d+)\s*(?:days?'?|days|day's|day)\b/i;
+const NOTICE_MONTHS_REGEX = /(\d+)\s*months?\b/i;
+const NOTICE_WORD_REGEX = /notice/i;
+
+const LOCATION_HEADER_REGEX =
+  /(?:Base\s+)?Location:?\s*([A-Za-z\s]+?)(?:\r?\n|$|\.)/i;
+const STATIONED_LOCATION_REGEX =
+  /(?:stationed at|located in|office in|report to the)\s+(?:the\s+)?(?:Company's\s+)?(?:principal\s+)?(?:office\s+in\s+)?([A-Za-z]+)(?:\s+office)?/i;
+
+const MAJOR_CITIES = [
+  "Bengaluru",
+  "Bangalore",
+  "Mumbai",
+  "Bombay",
+  "Delhi",
+  "New Delhi",
+  "Gurugram",
+  "Gurgaon",
+  "Noida",
+  "Hyderabad",
+  "Chennai",
+  "Madras",
+  "Pune",
+  "Kolkata",
+  "Calcutta",
+  "Ahmedabad",
+  "Kochi",
+  "Cochin",
+  "Chandigarh",
+  "Jaipur",
+  "Coimbatore",
+];
+
+const MAJOR_CITIES_CANONICAL_MAP = new Map<string, string>();
+for (const city of MAJOR_CITIES) {
+  MAJOR_CITIES_CANONICAL_MAP.set(city.toLowerCase(), city);
+}
+// Sort by descending length so multi-word names like "New Delhi" match before "Delhi"
+const SORTED_MAJOR_CITIES = [...MAJOR_CITIES].sort((a, b) => b.length - a.length);
+const MAJOR_CITIES_REGEX = new RegExp(`\\b(${SORTED_MAJOR_CITIES.join("|")})\\b`, "i");
+
+const FREQ_DOC_A_PATTERN = /\b(?:occasionally|as required|as needed)\b/i;
+const FREQ_DOC_B_PATTERN =
+  /\b(?:(?:\d+|one|two|three|four|five|six|seven)\s+days?\s+(?:a|per)\s+week)\b/i;
+
+const LINE_ITEM_REGEX =
+  /^(.*?)(?::|-|\s+)\s*(?:INR|Rs\.?|₹)?\s*([\d,]+(?:\.\d+)?)\s*$/i;
+
+const GROSS_SALARY_REGEX =
+  /\bGross(?:\s+Salary|\s+Pay)?\b[:\s\-]*([0-9,]+(?:\.[0-9]+)?)/i;
+const NET_PAY_REGEX = /\bNet\s+Pay\b[:\s\-]*([0-9,]+(?:\.[0-9]+)?)/i;
+
+const LEAVE_DOC_A_REGEX_1 =
+  /(\d+)\s*(?:days?(?:\s+of)?(?:\s+(?:paid|annual|earned|privilege))?\s+leave|days\s+leave)/i;
+const LEAVE_DOC_A_HEADER_REGEX =
+  /(?:leave\s+entitlement|annual\s+leave|paid\s+leave)[:\s\-]+(\d+)\s*days?/i;
+const LEAVE_DOC_B_PAT1 = /([A-Za-z\s]+leave)[:\s\-]+(\d+)\s*days?/i;
+const LEAVE_DOC_B_PAT2 = /(\d+)\s*days?(?:\s+of)?\s+([A-Za-z\s]+leave)/i;
+
 /**
  * Extracts notice days stated for a specific entity from text.
  * Matches explicit digits associated with days/months.
@@ -18,9 +82,9 @@ function extractNoticeDays(
 
   while ((match = sentenceRegex.exec(text)) !== null) {
     const sentence = match[0];
-    if (entityPattern.test(sentence) && /notice/i.test(sentence)) {
+    if (entityPattern.test(sentence) && NOTICE_WORD_REGEX.test(sentence)) {
       // Look for day numbers: "90 days' written notice", "30 days' notice", "60 days", etc.
-      const daysMatch = sentence.match(/(\d+)\s*(?:days?'?|days|day's|day)\b/i);
+      const daysMatch = sentence.match(NOTICE_DAYS_REGEX);
       if (daysMatch) {
         const days = parseInt(daysMatch[1], 10);
         if (!isNaN(days) && days > 0) {
@@ -29,7 +93,7 @@ function extractNoticeDays(
       }
 
       // Look for months: "3 months notice", "1 month notice"
-      const monthsMatch = sentence.match(/(\d+)\s*months?\b/i);
+      const monthsMatch = sentence.match(NOTICE_MONTHS_REGEX);
       if (monthsMatch) {
         const months = parseInt(monthsMatch[1], 10);
         if (!isNaN(months) && months > 0) {
@@ -55,13 +119,8 @@ export function handleNoticeAsymmetry(texts: string[]): Finding[] {
     return [];
   }
 
-  const employeePattern =
-    /\b(employee|executive|consultant|you|staff|resign|resignation)\b/i;
-  const companyPattern =
-    /\b(company|employer|management|organization|terminate|termination|discharge|pay in lieu)\b/i;
-
-  const empResult = extractNoticeDays(rawText, employeePattern);
-  const compResult = extractNoticeDays(rawText, companyPattern);
+  const empResult = extractNoticeDays(rawText, EMPLOYEE_PATTERN);
+  const compResult = extractNoticeDays(rawText, COMPANY_PATTERN);
 
   // If neither or only one side states a number, return NO finding (never guess a number)
   if (!empResult || !compResult) {
@@ -122,9 +181,7 @@ function extractLocation(
   if (!text) return null;
 
   // Pattern: "Base Location: Bengaluru" or "Location: Mumbai"
-  const locationHeaderMatch = text.match(
-    /(?:Base\s+)?Location:?\s*([A-Za-z\s]+?)(?:\r?\n|$|\.)/i
-  );
+  const locationHeaderMatch = text.match(LOCATION_HEADER_REGEX);
   if (locationHeaderMatch) {
     const loc = locationHeaderMatch[1].trim();
     if (loc && loc.length > 2) {
@@ -133,9 +190,7 @@ function extractLocation(
   }
 
   // Pattern: "stationed at ... [City]" or "report to the [City] office"
-  const stationedMatch = text.match(
-    /(?:stationed at|located in|office in|report to the)\s+(?:the\s+)?(?:Company's\s+)?(?:principal\s+)?(?:office\s+in\s+)?([A-Za-z]+)(?:\s+office)?/i
-  );
+  const stationedMatch = text.match(STATIONED_LOCATION_REGEX);
   if (stationedMatch) {
     const loc = stationedMatch[1].trim();
     if (loc && loc.length > 2) {
@@ -143,39 +198,16 @@ function extractLocation(
     }
   }
 
-  // Known Indian metropolitan employment hubs
-  const majorCities = [
-    "Bengaluru",
-    "Bangalore",
-    "Mumbai",
-    "Bombay",
-    "Delhi",
-    "New Delhi",
-    "Gurugram",
-    "Gurgaon",
-    "Noida",
-    "Hyderabad",
-    "Chennai",
-    "Madras",
-    "Pune",
-    "Kolkata",
-    "Calcutta",
-    "Ahmedabad",
-    "Kochi",
-    "Cochin",
-    "Chandigarh",
-    "Jaipur",
-    "Coimbatore",
-  ];
-
-  for (const city of majorCities) {
-    const cityRegex = new RegExp(`\\b${city}\\b`, "i");
-    if (cityRegex.test(text)) {
-      const match = text.match(
-        new RegExp(`(?:[^.\n]*?\\b${city}\\b[^.\n]*)`, "i")
-      );
-      return { location: city, rawSpan: match ? match[0].trim() : city };
-    }
+  // Known Indian metropolitan employment hubs checked in a single compiled pass
+  const cityMatch = text.match(MAJOR_CITIES_REGEX);
+  if (cityMatch) {
+    const matchedCity = cityMatch[1];
+    const canonical =
+      MAJOR_CITIES_CANONICAL_MAP.get(matchedCity.toLowerCase()) || matchedCity;
+    const match = text.match(
+      new RegExp(`(?:[^.\\n]*?\\b${matchedCity}\\b[^.\\n]*)`, "i")
+    );
+    return { location: canonical, rawSpan: match ? match[0].trim() : canonical };
   }
 
   return null;
@@ -284,19 +316,12 @@ export function handleFrequencyConflict(texts: string[]): Finding[] {
     return [];
   }
 
-  // Wording in Document A: "occasionally" / "as required" / "as needed"
-  const docAPattern = /\b(?:occasionally|as required|as needed)\b/i;
-  // Specific number of office days per week in Document B
-  // e.g. "5 days a week", "three days per week", "five days a week", "4 days per week"
-  const docBPattern =
-    /\b(?:(?:\d+|one|two|three|four|five|six|seven)\s+days?\s+(?:a|per)\s+week)\b/i;
-
-  if (docAPattern.test(docA) && docBPattern.test(docB)) {
+  if (FREQ_DOC_A_PATTERN.test(docA) && FREQ_DOC_B_PATTERN.test(docB)) {
     const checkDef = checks.RTO2;
     if (!checkDef) return [];
 
-    const sentenceA = extractFirstMatchingSentence(docA, docAPattern) || "";
-    const sentenceB = extractFirstMatchingSentence(docB, docBPattern) || "";
+    const sentenceA = extractFirstMatchingSentence(docA, FREQ_DOC_A_PATTERN) || "";
+    const sentenceB = extractFirstMatchingSentence(docB, FREQ_DOC_B_PATTERN) || "";
     const exactQuote =
       sentenceA && sentenceB
         ? `${sentenceA} | ${sentenceB}`
@@ -334,11 +359,7 @@ function parseLineItems(
     const trimmed = rawLine.trim();
     if (!trimmed) continue;
 
-    // Match label followed by optional colon/hyphen/spaces and a numeric amount (with optional commas)
-    // E.g. "Late Mark Penalty 1000", "Asset Damage Recovery: 5,000", "Misc Adjustment - 1000"
-    const match = trimmed.match(
-      /^(.*?)(?::|-|\s+)\s*(?:INR|Rs\.?|₹)?\s*([\d,]+(?:\.\d+)?)\s*$/i
-    );
+    const match = trimmed.match(LINE_ITEM_REGEX);
     if (match) {
       const label = match[1].replace(/[:\-]$/, "").trim();
       const numStr = match[2].replace(/,/g, "");
@@ -475,12 +496,8 @@ export function handlePayslipCheck(texts: string[]): Finding[] {
   // 3. net_check (runs on payslip):
   // Find "Gross NUMBER", sum of deduction lines, and "Net Pay NUMBER".
   // Fire ONLY if gross - total_deductions != net_pay (allow a rounding tolerance of 1).
-  const grossMatch = payslipText.match(
-    /\bGross(?:\s+Salary|\s+Pay)?\b[:\s\-]*([0-9,]+(?:\.[0-9]+)?)/i
-  );
-  const netMatch = payslipText.match(
-    /\bNet\s+Pay\b[:\s\-]*([0-9,]+(?:\.[0-9]+)?)/i
-  );
+  const grossMatch = payslipText.match(GROSS_SALARY_REGEX);
+  const netMatch = payslipText.match(NET_PAY_REGEX);
 
   if (grossMatch && netMatch && deductionItems.length > 0) {
     const grossVal = parseFloat(grossMatch[1].replace(/,/g, ""));
@@ -531,17 +548,13 @@ export function handleLeaveDaysConflict(texts: string[]): Finding[] {
   let totalDocA: number | null = null;
   let matchSpanA = "";
 
-  const docAMatch = docA.match(
-    /(\d+)\s*(?:days?(?:\s+of)?(?:\s+(?:paid|annual|earned|privilege))?\s+leave|days\s+leave)/i
-  );
+  const docAMatch = docA.match(LEAVE_DOC_A_REGEX_1);
   if (docAMatch) {
     totalDocA = parseInt(docAMatch[1], 10);
     matchSpanA = docAMatch[0];
   } else {
     // Also try: "Leave Entitlement: 24 days"
-    const headerMatch = docA.match(
-      /(?:leave\s+entitlement|annual\s+leave|paid\s+leave)[:\s\-]+(\d+)\s*days?/i
-    );
+    const headerMatch = docA.match(LEAVE_DOC_A_HEADER_REGEX);
     if (headerMatch) {
       totalDocA = parseInt(headerMatch[1], 10);
       matchSpanA = headerMatch[0];
@@ -564,10 +577,9 @@ export function handleLeaveDaysConflict(texts: string[]): Finding[] {
     if (!trimmed) continue;
 
     // Pattern 1: "Casual leave: 12 days" or "Sick leave: 6 days"
-    const pat1 = /([A-Za-z\s]+leave)[:\s\-]+(\d+)\s*days?/i;
-    const m1 = trimmed.match(pat1);
+    const m1 = trimmed.match(LEAVE_DOC_B_PAT1);
     if (m1) {
-      const num = parseInt(m2OrFallback(m1[2]), 10);
+      const num = parseInt(m1[2], 10);
       if (!isNaN(num)) {
         totalDocB += num;
         leaveMentionsB.push(trimmed);
@@ -576,8 +588,7 @@ export function handleLeaveDaysConflict(texts: string[]): Finding[] {
     }
 
     // Pattern 2: "12 days of casual leave" or "12 days casual leave"
-    const pat2 = /(\d+)\s*days?(?:\s+of)?\s+([A-Za-z\s]+leave)/i;
-    const m2 = trimmed.match(pat2);
+    const m2 = trimmed.match(LEAVE_DOC_B_PAT2);
     if (m2) {
       const num = parseInt(m2[1], 10);
       if (!isNaN(num)) {
@@ -585,10 +596,6 @@ export function handleLeaveDaysConflict(texts: string[]): Finding[] {
         leaveMentionsB.push(trimmed);
       }
     }
-  }
-
-  function m2OrFallback(val: string): string {
-    return val;
   }
 
   if (totalDocB === 0) {

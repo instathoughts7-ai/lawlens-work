@@ -174,3 +174,23 @@ export function prepareRedactedFindingsForMemo(
     questionToAsk: f.questionToAsk,
   }));
 }
+
+/**
+ * Computes a deterministic, collision-free cache key for an analysis state.
+ * Takes domainId, topicId, and the pre-redacted findings to guarantee
+ * that any identical analysis state maps to the exact same cache entry.
+ */
+export function computeAnalysisCacheKey(
+  domainId: string,
+  topicId: string,
+  findings: Array<{ checkId: string; exactQuote?: string | null; severity?: string }>
+): string {
+  if (findings.length === 0) {
+    return `${domainId}:${topicId}:0:`;
+  }
+  const sortedFindings = [...findings].sort((a, b) => a.checkId.localeCompare(b.checkId));
+  const signature = sortedFindings
+    .map((f) => `${f.checkId}:${f.severity || ""}:${(f.exactQuote || "").slice(0, 40)}`)
+    .join("|");
+  return `${domainId}:${topicId}:${findings.length}:${signature}`;
+}
